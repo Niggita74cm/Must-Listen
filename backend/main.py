@@ -18,6 +18,7 @@ def start_application():
     return app
 
 
+
 app = start_application()
 origins = ["http://localhost:8080/"]
 
