@@ -72,14 +72,14 @@ async def login(current_user: UserLogin, db: Session = Depends(get_db)):
         except HTTPException:
             return {"message": "Invalid credentials"}
 auth2_data = {}
-#pami ieuq ywqu vxgj
+
 @router.get("/auth2")
 async def auth2(request: Request):
     print("Get Auth2")
     try:
         smtpObj = smtplib.SMTP('smtp.gmail.com', 587)
         smtpObj.starttls()
-        smtpObj.login('vamp.be.live@gmail.com', 'pami ieuq ywqu vxgj')
+        smtpObj.login('vamp.be.live@gmail.com', '')
         one_time_password = CodeAuth2(
             code=generate_one_time_psswd(6)
         )
