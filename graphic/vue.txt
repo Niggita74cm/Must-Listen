@@ -1,0 +1,4 @@
+nmp install -g @vue/cli
+vue create graphic
+cd graphic
+npm run serve
