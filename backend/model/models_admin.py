@@ -1,12 +1,5 @@
 from pydantic import BaseModel
 
-#{
-#choose_create_user:bool
-#choose_delete_user:bool
-#choose_delete_comment:bool
-#user_id:int//не знаю как это получить
-#comment_id: int//не знаю как это получить
-#}
 class ChooseAction(BaseModel):
     choose_create_user: bool
     choose_delete_user: bool
@@ -22,6 +15,21 @@ class UserCreateAdmin(BaseModel):
     confirmPassword: str
     close: bool
 
-class DataForAdmin(BaseModel):
-    data_id: int
+class DataForDeleteUser(BaseModel):
+    user_id: int
+    login: str
+    email: str
+    login_ind: bool
+    email_ind: bool
+    close: bool
+
+
+#переделать
+class DataForDeleteComment(BaseModel):
+    user_id: int
+    track_id: bool
+    text: str
+    text_ind: bool
+    login: str
+    login_ind: bool
     close: bool

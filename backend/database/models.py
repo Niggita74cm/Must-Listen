@@ -1,6 +1,6 @@
 from sqlalchemy.orm import relationship
 from backend.database.base import Base
-from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint, Boolean, Text
+from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint, Boolean, Text, Float
 class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     login = Column(String, nullable=False)
@@ -27,14 +27,14 @@ class User_track(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     track_id = Column(Integer, ForeignKey('track.id'), nullable=False)
+    rating = Column(Float, nullable=False)
     user = relationship('User', remote_side='User_track.user_id')
     track = relationship('Track', remote_side='User_track.track_id')
 
-#class User_rating(Base):
-#    ...
-#class User_comment(Base):
-#    ...
-#class Track_comment(Base):
-#    ...
-#class Track_rating(Base):
-#    ...
+class Comment(Base):
+    id = Column(Integer, primary_key=True, index=True)
+    comment = Column(Text, nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    track_id = Column(Integer, ForeignKey('track.id'), nullable=False)
+    user = relationship('User', remote_side='User_track.user_id')
+    track = relationship('Track', remote_side='User_track.track_id')

@@ -17,7 +17,6 @@ class UserCreateFormPost(BaseModel):
 class UserLogin(BaseModel):
     login: str
     password: str
-    auth: bool
     identification: bool
 
 class UserGet(BaseModel):

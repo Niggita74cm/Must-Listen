@@ -1,7 +1,7 @@
 from starlette.status import HTTP_303_SEE_OTHER
 
 from backend.database.models import User
-from backend.database.work_user_db import get_user
+from backend.database.work_user_db import get_user, get_user_id
 from backend.database.connect import get_db
 from fastapi import APIRouter
 from fastapi import Depends, Request
@@ -9,28 +9,13 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import true
 from backend.model.models_auth import UserLogin, UserGet, CodeAuth2
-from typing import List
+from form.form_auth import LoginForm
 from fastapi.responses import RedirectResponse
 import smtplib
 from backend.security_util.generate_pswd import generate_one_time_psswd
 
 
-class LoginForm:
-    def __init__(self, current_user: UserLogin):
-        self.current_user: UserLogin = current_user
-        self.errors: List = []
 
-    async def load_data(self):
-        self.login = self.current_user.login
-        self.password = self.current_user.password
-        self.auth2 = None
-
-    async def is_valid(self):
-        if not self.password or not len(self.password) >= 4:
-            self.errors.append("A valid password is required")
-        if not self.errors:
-            return True
-        return False
 
 router = APIRouter()
 @router.get("/")
@@ -61,9 +46,8 @@ async def login(current_user: UserLogin, db: Session = Depends(get_db)):
                 print("Logged in successfully")
                 if user.auth2 == true():
                     print("authentication two factor")
-
                     response = RedirectResponse(url=f"/auth2", status_code=HTTP_303_SEE_OTHER)
-                    response.set_cookie(key="email_user", value=user.email, max_age=3600, secure=True, httponly=True)
+                    #response.set_cookie(key="email_user", value=user.email, max_age=3600, secure=True, httponly=True)
                 else:
                     print("no authentication two factor")
                     response = RedirectResponse(url="/app/LK", status_code=HTTP_303_SEE_OTHER)
@@ -72,18 +56,19 @@ async def login(current_user: UserLogin, db: Session = Depends(get_db)):
         except HTTPException:
             return {"message": "Invalid credentials"}
 auth2_data = {}
-
 @router.get("/auth2")
-async def auth2(request: Request):
+async def auth2(request: Request, db: Session = Depends(get_db)):
     print("Get Auth2")
     try:
         smtpObj = smtplib.SMTP('smtp.gmail.com', 587)
         smtpObj.starttls()
-        smtpObj.login('vamp.be.live@gmail.com', '')
+        smtpObj.login('vamp.be.live@gmail.com', 'pami ieuq ywqu vxgj')
         one_time_password = CodeAuth2(
             code=generate_one_time_psswd(6)
         )
-        email_user = request.cookies.get("email_user")
+        user_id = request.cookies.get("user_id")
+        user = get_user_id(user_id, db)
+        email_user = user.email
         print(email_user)
         smtpObj.sendmail("vamp.be.live@gmail.com", email_user,
                          f'Code password for Must Music: {one_time_password.code}')
@@ -95,9 +80,11 @@ async def auth2(request: Request):
 
 
 @router.post("/auth2", response_model = CodeAuth2)
-async def auth2(code: CodeAuth2, request: Request):
+async def auth2(code: CodeAuth2, request: Request, db: Session = Depends(get_db)):
     print("Post Auth2")
-    email_user = request.cookies.get("email_user")
+    user_id = request.cookies.get("user_id")
+    user = get_user_id(user_id, db)
+    email_user = user.email
     print(email_user)
     print(auth2_data[email_user])
     print(code.code)
@@ -108,4 +95,3 @@ async def auth2(code: CodeAuth2, request: Request):
         print("Auth2 not successful")
         response = RedirectResponse(url="/", status_code=HTTP_303_SEE_OTHER)
     return response
-    return {"code": "Post Auth2"}
