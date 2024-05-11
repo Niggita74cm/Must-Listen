@@ -43,8 +43,13 @@
         <div v-for="(comment, index) in Comments" :key="index" class="comment">
           
           <div class="comment-content">
-          <p><strong>{{ comment.user_name }}</strong><br/> {{ comment.text_connent }}</p>
-        </div>
+            <p>
+              <strong>{{ comment.user_name }}</strong> <code style="color:grey;">{{ comment.time }}</code>
+              <br/>
+              {{ comment.text_connent }}
+            </p>
+
+                   </div>
         <div v-if="current_user === 'admin'" class="comment-actions">
             <button @click="removeComment(index,comment.comment_id)" class="delete-button">Удалить</button>
           </div>
@@ -101,26 +106,31 @@
         {
             comment_id: 1,
             user_name: 'sasha0021',
+            time: "23.04.2024",
             text_connent: '👍',
         },
         {
             comment_id: 2,
             user_name: 'user',
+            time: "03.12.2023",
             text_connent: 'Best ❤️',
         },
         {
             comment_id: 3,
             user_name: 'star15',
+            time: "16.05.2023",
             text_connent: 'I dont like it(((',
         },
         {
             comment_id: 4,
             user_name: 'lover_',
+            time: "18.07.2022",
             text_connent: 'Listen every day',
         },
         {
             comment_id: 5,
             user_name: 'music_user',
+            time: "12.01.2022",
             text_connent: 'This is my favourite track!!!😍😍😍',
         },
       ],
@@ -147,12 +157,18 @@
     //Здесь надо на сервак отправлять добавленный комент
       if (this.newComment.trim() !== '') {
         const newCommentId = this.Comments.length + 1;
+        const currentTime = new Date(Date.now()); // текущее время
+        const day = currentTime.getDate();
+        const month = currentTime.getMonth() + 1; // добавляем 1, так как месяцы в JavaScript начинаются с нуля
+        const year = currentTime.getFullYear();
+        const formattedTime = `${day.toString().padStart(2, '0')}.${month.toString().padStart(2, '0')}.${year}`;
         this.Comments.push({
           user_name: this.current_user,
           text_connent: this.newComment,
           comment_id: newCommentId,
+          time: formattedTime
         });
-        console.log('Добавлен комент:');
+        console.log('Добавлен комент');
         this.newComment = '';
       }
     },
@@ -226,6 +242,7 @@
 
 .comment-content {
   flex-grow: 1;
+  color: black;
 }
 
 .comment-actions {
