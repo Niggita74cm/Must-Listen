@@ -11,12 +11,6 @@ class User(Base):
         UniqueConstraint('login', 'hashed_password', name='unique_login_passwd'),
     )
 
-class User_data(Base):
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    name = Column(String, nullable=False)
-    surname = Column(String, nullable=False)
-    user = relationship('User',  remote_side = 'User_data.user_id')
 
 class Track(Base):
     id = Column(Integer, primary_key=True, index=True)
@@ -32,9 +26,9 @@ class User_track(Base):
     track = relationship('Track', remote_side='User_track.track_id')
 
 class Comment(Base):
-    id = Column(Integer, primary_key=True, index=True)
-    comment = Column(Text, nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    track_id = Column(Integer, ForeignKey('track.id'), nullable=False)
-    user = relationship('User', remote_side='User_track.user_id')
-    track = relationship('Track', remote_side='User_track.track_id')
+     id = Column(Integer, primary_key=True, index=True)
+     comment = Column(Text, nullable=False)
+     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+     track_id = Column(Integer, ForeignKey('track.id'), nullable=False)
+     user = relationship('User', remote_side='Comment.user_id')
+     track = relationship('Track', remote_side='Comment.track_id')
