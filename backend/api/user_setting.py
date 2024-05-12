@@ -10,7 +10,7 @@ from backend.database.work_user_db import (update_user_auth, update_user_login,
                                            update_user_data_name, update_user_data_surname)
 from fastapi.responses import RedirectResponse
 from starlette.status import HTTP_303_SEE_OTHER
-from backend.security_util.hashing import Hasher
+from backend.services.security_util.hashing import Hasher
 router = APIRouter()
 
 
