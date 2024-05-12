@@ -7,6 +7,8 @@ import MainPage from '@/components/MainPage.vue';
 import SettingsFirst from '@/components/SettingsFirst.vue'
 import SearchResults from '@/components/SearchResults.vue'
 import MusicPage from '@/components/MusicPage.vue'
+import AuthUser_2factor from '@/components/AuthUser_2factor.vue'
+
 
 Vue.use(Router);
 
@@ -42,6 +44,11 @@ export default new Router({
     path: '/music/:id',
     name: 'MusicPage',
     component: MusicPage,
+  },
+  {
+    path: '/2factor',
+    name: 'AuthUser_2factor',
+    component: AuthUser_2factor,
   },
  ],
 });
