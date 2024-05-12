@@ -12,7 +12,7 @@ from backend.model.models_auth import UserLogin, UserGet, CodeAuth2
 from backend.api.form.form_auth import LoginForm
 from fastapi.responses import RedirectResponse
 import smtplib
-from backend.security_util.generate_pswd import generate_one_time_psswd
+from backend.services.security_util.generate_pswd import generate_one_time_psswd
 from starlette.responses import Response
 
 

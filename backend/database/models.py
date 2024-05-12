@@ -13,10 +13,29 @@ class User(Base):
 
 
 class Track(Base):
+    #artists,album_name,track_name,popularity,duration_ms,explicit,danceability,energy,key,loudness,mode,
+    #speechiness,acousticness,instrumentalness,liveness,valence,tempo,time_signature,track_genre
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    type_track = Column(String, nullable=False)
-    data_track = Column(Text, nullable=False)
+    track_name = Column(String, nullable=False)
+    artists = Column(String, nullable=False)
+    album_name = Column(String, nullable=False)
+    popularity = Column(Integer, nullable=False)
+    duration_ms = Column(Integer, nullable=False)
+    explicit = Column(Boolean, nullable=False)
+    danceability = Column(Float, nullable=False)
+    energy = Column(Float, nullable=False)
+    key = Column(Integer, nullable=False)
+    loudness = Column(Float, nullable=False)
+    mode = Column(Integer, nullable=False)
+    speechiness = Column(Float, nullable=False)
+    acousticness = Column(Float, nullable=False)
+    instrumentalness = Column(Float, nullable=False)
+    liveness = Column(Float, nullable=False)
+    valence = Column(Float, nullable=False)
+    tempo = Column(Float, nullable=False)
+    time_signature = Column(Integer, nullable=False)
+    track_genre = Column(String, nullable=False)
+    picture_track = Column(String)
 class User_track(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
@@ -32,3 +51,5 @@ class Comment(Base):
      track_id = Column(Integer, ForeignKey('track.id'), nullable=False)
      user = relationship('User', remote_side='Comment.user_id')
      track = relationship('Track', remote_side='Comment.track_id')
+
+

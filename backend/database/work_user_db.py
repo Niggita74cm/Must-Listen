@@ -1,5 +1,5 @@
-from sqlalchemy import false, update, true
-from backend.security_util.hashing import Hasher
+from sqlalchemy import false, update
+from backend.services.security_util.hashing import Hasher
 from backend.database.models import User
 from backend.model.models_auth import UserCreate, UserGet
 from sqlalchemy.orm import Session

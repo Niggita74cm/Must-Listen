@@ -1,51 +1,32 @@
-# from sqlalchemy import false, update
-# from backend.security_util.hashing import Hasher
-# from backend.database.models import User, Track, User_track, Comment
-# from backend.model.models_auth import UserCreate,  UserGet
-# from sqlalchemy.orm import Session
-# # Use with database Track
-# def get_all_track(db: Session):
-#     all_data = db.query(Track).all()
-#     return all_data
-# def delete_track(db: Session, id_track: int):
-#     track = db.query(Track).filter(Track.id == id_track).all()
-#     db.delete(track)
-#     db.commit()
-# def create_track(db: Session, track: Track):
-#     create_track = Track(
-#         name = track.name,
-#         type_track = track.type_track,
-#         data_track = track.data_track
-#     )
-#     db.add(create_track)
-#     db.commit()
-#     db.refresh(create_track)
-#     return create_track
-#
-#
-# # Use with database User_track
-# def get_user_track(db: Session, user_id: int):
-#     user_track = db.query(User_track).filter(User_track.user_id == user_id).all()
-#     return user_track
-# def create_user_track(db: Session, user_track: User_track):
-#     create_user_track = User_track(
-#         user_id = user_track.user_id,
-#         track_id = user_track.track_id,
-#         rating = user_track.rating
-#     )
-#     db.add(create_user_track)
-#     db.commit()
-#     db.refresh(create_user_track)
-#     return create_user_track
-# def delete_track_for_user(db: Session, track_id: int):
-#     delete_track = db.query(Track).filter(Track.track_id == track_id).all()
-#     db.delete(delete_track)
-#     db.commit()
-# def delete_all_track_users(db: Session, user_id: int):
-#     delete_track = db.query(User_track).filter(User_track.user_id == user_id).all()
-#     db.delete(delete_track)
-#     db.commit()
-#
+from backend.database.models import Track
+from backend.model.models_admin import LoadTrack
+from sqlalchemy.orm import Session
+# Use with database Track
+def get_all_track(db: Session):
+    all_data = db.query(Track).all()
+    return all_data
+def delete_track(db: Session, id_track: int):
+    track = db.query(Track).filter(Track.id == id_track).all()
+    db.delete(track)
+    db.commit()
+
+
+def create_track(db: Session, track: LoadTrack):
+    create_track = Track(
+        name = track.name,
+        type_track = track.type_track,
+        data_track = track.data_track
+    )
+    db.add(create_track)
+    db.commit()
+    db.refresh(create_track)
+    return create_track
+
+
+
+
+
+
 # # Use with database Comment
 # def create_comment(db: Session, create_comment: Comment):
 #     comment = Comment(
