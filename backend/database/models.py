@@ -37,6 +37,7 @@ class Track(Base):
     track_genre = Column(String, nullable=False)
     picture_track = Column(String)
     rating = Column(Float, nullable=False)
+    number_rating = Column(Integer, nullable=False)
 class User_track(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)

@@ -11,6 +11,7 @@ router = APIRouter()
 
 @router.get("/app/SearchResults", response_model=List[SearchResults])
 def get_search_results(request: Request, tracks: List[SearchResults], db: Session = Depends(get_db), cookie_value: str = Cookie(None)):
+    print(f"Полученное значение cookie: {cookie_value}")
     return tracks
 
 

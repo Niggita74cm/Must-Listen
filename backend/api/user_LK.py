@@ -66,25 +66,5 @@ async def main_LK(request: Request, response: Response, action: ShowTrack, db: S
 
 
 
-# вот это просто в оприори доделать
-# def create_comment(db: Session, text: str):
-#     ...
-# def delete_comment(db: Session, text: str):
-#     ...
-# def update_comment(db: Session, text: str):
-#     ...
-#
-# def check_on_admin(db: Session, user_id):
-#     return True
-
-
-# @router.get("/app/LK/track")
-# async def track_page(request: Request, db: Session = Depends(get_db)):
-#     ...
-#
-#
-# @router.post("/app/LK/track", response_model=ActionComment)
-# async def track_list(request: Request, db: Session = Depends(get_db)):
-#     ...
 
 

@@ -1,6 +1,7 @@
 from backend.database.models import Track
 from backend.model.models_admin import LoadTrack
 from sqlalchemy.orm import Session
+from sqlalchemy import update
 # Use with database Track
 def create_track(db: Session, track: LoadTrack):
     createTrack = Track(
@@ -24,7 +25,8 @@ def create_track(db: Session, track: LoadTrack):
         time_signature=track.time_signature,
         track_genre=track.track_genre,
         picture_track=track.picture_track,
-        rating=0.0
+        rating=0.0,
+        number_rating=0
     )
     db.add(createTrack)
     db.commit()
@@ -39,7 +41,17 @@ def get_track(db: Session, track_id: int):
     track = db.query(Track).filter(Track.id == track_id).first()
     return track
 
+def update_rating(db: Session, track_id: int, rating: float):
+    db.execute(update(Track).where(Track.id == track_id).values(rating=rating))
+    db.commit()
+    user = db.query(Track).filter(Track.id == track_id).first()
+    db.refresh(user)
 
+def update_num_rating(db: Session, track_id: int, number_rating: int):
+    db.execute(update(Track).where(Track.id == track_id).values(number_rating=number_rating))
+    db.commit()
+    user = db.query(Track).filter(Track.id == track_id).first()
+    db.refresh(user)
 
 
 # def delete_track(db: Session, id_track: int):

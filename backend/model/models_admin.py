@@ -34,7 +34,8 @@ from pydantic import BaseModel
 #     login_ind: bool
 #     close: bool
 
-
+class NameDB(BaseModel):
+    name_database: str
 class LoadTrack(BaseModel):
     track_name: str
     artists: str
