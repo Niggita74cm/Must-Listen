@@ -21,3 +21,23 @@ class ShowTrack(BaseModel):
     SearchIndic: bool #переход на режим поиска true- поиск, false- работа с личными треками
     Setting: bool #переход на страницу настройки пользователя
     NumberPage: int = 1 #страница личных треков, треки разделены по 20 штук на страницу
+
+#используется для формирования вывода в личном кабинете пользователя
+class LKTrack(BaseModel):
+    TrackName: str
+    ratingSelf: int
+    ratingService: float
+    date: str
+    type: str
+
+#используется для вывода результата поиска
+class SearchResults(BaseModel):
+    track_id: int
+    track_name: str
+    album_name: str
+    artists: str
+    rating: float
+
+class ClickTrack(BaseModel):
+    track_id: int
+    TrackName: str

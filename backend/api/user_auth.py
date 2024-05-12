@@ -73,8 +73,7 @@ async def auth2(request: Request, db: Session = Depends(get_db)):
         print(email_user)
         smtpObj.sendmail("vamp.be.live@gmail.com", email_user,
                          f'Code password for Must Music: {one_time_password.code}')
-        #заменить на кук в теории сработать должно
-        #auth2_data[email_user] =one_time_password.code
+
         response = Response()
         response.set_cookie(key="code", value=one_time_password.code,  secure=True, httponly=True)
         print(one_time_password.code)
