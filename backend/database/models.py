@@ -53,6 +53,7 @@ class Comment(Base):
      comment = Column(Text, nullable=False)
      user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
      track_id = Column(Integer, ForeignKey('track.id'), nullable=False)
+     date = Column(TIMESTAMP, nullable=False)
      user = relationship('User', remote_side='Comment.user_id')
      track = relationship('Track', remote_side='Comment.track_id')
 
