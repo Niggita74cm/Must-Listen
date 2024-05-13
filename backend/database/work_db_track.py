@@ -35,7 +35,7 @@ def create_track(db: Session, track: LoadTrack):
 
 
 def get_all_track(db: Session):
-    all_data = db.query(Track).all()
+    all_data = db.query(Track.track_name, Track.artists, Track.album_name).all()
     return all_data
 def get_track(db: Session, track_id: int):
     track = db.query(Track).filter(Track.id == track_id).first()

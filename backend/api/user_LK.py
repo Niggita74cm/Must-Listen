@@ -21,8 +21,9 @@ async def main_LK(request: Request, db: Session = Depends(get_db)):
     print("Get main_LK")
     user_id = request.cookies.get("user_id")
     user_track = OrganizationTrackUser(db=db, user_id=int(user_id))
+    print(user_track)
     page = 1
-    Sorting = "date"
+    Sorting = "date_down"
     for cookie_name in request.cookies.keys():
         if cookie_name == "Sorting":
             Sorting = request.cookies.get("Sorting")
@@ -33,18 +34,19 @@ async def main_LK(request: Request, db: Session = Depends(get_db)):
     user_track = TracksOnPage(page, user_track)
     user_track = SortingTrackUser(Sorting, user_track)
     return user_track
-
+#
 @router.post("/app/LK", response_model=ShowTrack)
 async def main_LK(request: Request, response: Response, action: ShowTrack, db: Session = Depends(get_db)):
-    if await action.SearchIndic == True:
+    if action.SearchIndic == True:
         all_track = get_all_track(db)
+        print(all_track[:10])
+        return action
         found_tracks = search_tracks(action.TrackName, all_track)
         cookie_value = request.cookies.get("user_id")
         response.set_cookie(key="my_cookie", value=cookie_value)
-
         return found_tracks
         ...
-    if await action.Setting == True:
+    if action.Setting == True:
         ...
     # if await action.setting == False:
     #     if action.track_id != -1:
