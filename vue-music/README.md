@@ -30,3 +30,4 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 * /src/components/RegistrUserForm.vue - регистрация, там нет коментов, но там и так понятно
 * /src/components/SearchResults.vue - нужны результаты поиска
 * /src/components/MainPage.vue - сортировка на главное странице
+* /src/components/SettingsFirst.vue - настроечки
