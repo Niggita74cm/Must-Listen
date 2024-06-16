@@ -6,14 +6,11 @@ class UserSetting(BaseModel):
     up_auth2: bool
     up_login: bool
     up_email: bool
-    up_name: bool
-    up_surname: bool
     auth2: bool
     login: str
     email: str
-    name: str
-    surname: str
-    close: bool
+    #close: bool # непонятно нужно ли
+    delete_user: bool
 class UserSettingPassword(BaseModel):
     password_valid: str
     password: str

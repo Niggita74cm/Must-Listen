@@ -6,20 +6,18 @@ from fastapi import Depends, Request, Cookie
 from sqlalchemy.orm import Session
 from fastapi.responses import RedirectResponse
 from starlette.status import HTTP_303_SEE_OTHER
-from backend.model.models_track import RatingTrack, CommentTrack, RatingComment, SaveTrack
+from backend.model.models_track import RatingTrack, CommentTrack, RatingComment, SaveTrack, SendTrack, SendComments
 from backend.database.work_db_track import get_track, update_rating, update_num_rating
-from backend.database.work_db_comment import create_comment, update_comment
+from backend.database.work_db_comment import create_comment, update_comment, get_all_comments
 from backend.database.work_db_user_track import create_user_track, update_user_track,get_track_rating
+from backend.database.work_user_db import get_user_id
 router = APIRouter()
 
 # вот это просто в оприори доделать
 # def delete_comment(db: Session, text: str):
 #     ...
-# def update_comment(db: Session, text: str):
-#     ...
-#
-# def check_on_admin(db: Session, user_id):
-#     return True
+
+
 
 def update_rating_track(rating: RatingTrack, db: Session):
     track = get_track(db, rating.track_id)
@@ -44,8 +42,25 @@ def create_comment_track(comment: CommentTrack, db: Session):
 
 def update_comment_track(comment: CommentTrack, db: Session):
     create_comment(db, comment)
+
+#так не понятно как получать id трека(в теории через url параметр)
 @router.get("/app/LK/track")
 async def track_page(request: Request, db: Session = Depends(get_db)):
+    #track_id = request.query_params.get("track_id")
+    track_id = 0
+    track = get_track(db, track_id)
+    comments_track = get_all_comments(db, track_id)
+    send_comment=[]
+    user_id = int(request.cookies.get("user_id"))
+    for comment in comments_track:
+        user_data = get_user_id(user_id,db)
+        s_c = SendComments(
+            login = user_data.login,
+            comment=comment.comment
+        )
+        send_comment.append(s_c)
+        ...
+
     ...
 
 @router.post("/app/LK/track", response_model=RatingComment)

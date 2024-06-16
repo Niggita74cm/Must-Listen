@@ -39,15 +39,20 @@ async def main_LK(request: Request, db: Session = Depends(get_db)):
 async def main_LK(request: Request, response: Response, action: ShowTrack, db: Session = Depends(get_db)):
     if action.SearchIndic == True:
         all_track = get_all_track(db)
-        print(all_track[:10])
-        return action
         found_tracks = search_tracks(action.TrackName, all_track)
+        print(found_tracks)#то что на фронт передается
         cookie_value = request.cookies.get("user_id")
-        response.set_cookie(key="my_cookie", value=cookie_value)
-        return found_tracks
-        ...
-    if action.Setting == True:
-        ...
+        response.set_cookie(key="user_id", value=cookie_value)
+        return action#надо чтоб сдесь было, то что надо передать
+    else:
+        cookie_value = request.cookies.get("user_id")
+        response.set_cookie(key="Sorting", value=action.TrackSorting)
+        response.set_cookie(key="Page", value=action.NumberPage)
+        response.set_cookie(key="user_id", value=cookie_value)
+
+        return response
+    #if action.Setting == True:
+    #    ...
     # if await action.setting == False:
     #     if action.track_id != -1:
     #         response = RedirectResponse(url=f"/app/LK/admin", status_code=HTTP_303_SEE_OTHER)

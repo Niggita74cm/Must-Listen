@@ -9,6 +9,7 @@ from starlette.status import HTTP_303_SEE_OTHER
 from backend.model.models_action import SearchResults
 router = APIRouter()
 
+#даже не знаю как сюда передовать, это может на фронте скорее всего делатся
 @router.get("/app/SearchResults", response_model=List[SearchResults])
 def get_search_results(request: Request, tracks: List[SearchResults], db: Session = Depends(get_db), cookie_value: str = Cookie(None)):
     print(f"Полученное значение cookie: {cookie_value}")

@@ -34,14 +34,15 @@ def update_comment(db: Session, comment_update: CommentTrack):
             db.refresh(up_comment)
             return up_comment
 
-# def get_all_comments(db: Session):
-#     all_data = db.query(Comment).all()
-#     return all_data
+def get_all_comments(db: Session, track_id: int):
+    all_data = db.query(Comment).filter(Comment.track_id == track_id).all()
+    return all_data
 
-# def delete_all_comments_user(db: Session, user_id: int):
-#     delete_tracks = db.query(Comment).filter(Comment.user_id == user_id).all()
-#     db.delete(delete_tracks)
-#     db.commit()
+def delete_all_comments_user(db: Session, user_id: int):
+    delete_tracks = db.query(Comment).filter(Comment.user_id == user_id).all()
+    db.delete(delete_tracks)
+    db.commit()
+
 # def delete_comment(db: Session, user_id: int, track_id: int, comment_text: str):
 #     all_comment = get_comments_for_user(db, user_id)
 #     for comment in all_comment:
