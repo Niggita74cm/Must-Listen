@@ -5,7 +5,7 @@ def get_url(user, password, host, port, database):
     return url
 url = get_url(postgresql_settings["pg_user"],
                         postgresql_settings["pg_password"],
-                        postgresql_settings["pg_host"],
+                        postgresql_settings["pg_name_service_docker"],
                         postgresql_settings["pg_port"],
                         postgresql_settings["pg_database"])
 async def check_db_connected():

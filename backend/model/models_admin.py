@@ -7,18 +7,18 @@ from pydantic import BaseModel
 #     close: bool
 #
 # class UserCreateAdmin(BaseModel):
-#     login: str
-#     email: str
-#     password: str
-#     name: str
-#     surname: str
-#     confirmPassword: str
+#     login: src
+#     email: src
+#     password: src
+#     name: src
+#     surname: src
+#     confirmPassword: src
 #     close: bool
 #
 # class DataForDeleteUser(BaseModel):
 #     user_id: int
-#     login: str
-#     email: str
+#     login: src
+#     email: src
 #     login_ind: bool
 #     email_ind: bool
 #     close: bool
@@ -28,9 +28,9 @@ from pydantic import BaseModel
 # class DataForDeleteComment(BaseModel):
 #     user_id: int
 #     track_id: bool
-#     text: str
+#     text: src
 #     text_ind: bool
-#     login: str
+#     login: src
 #     login_ind: bool
 #     close: bool
 

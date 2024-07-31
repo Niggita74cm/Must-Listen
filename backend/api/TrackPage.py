@@ -1,12 +1,9 @@
-from typing import List
 from datetime import datetime
 from backend.database.connect import get_db
 from fastapi import APIRouter
-from fastapi import Depends, Request, Cookie
+from fastapi import Depends, Request
 from sqlalchemy.orm import Session
-from fastapi.responses import RedirectResponse
-from starlette.status import HTTP_303_SEE_OTHER
-from backend.model.models_track import RatingTrack, CommentTrack, RatingComment, SaveTrack, SendTrack, SendComments
+from backend.model.models_track import RatingTrack, CommentTrack, RatingComment, SaveTrack, SendComments
 from backend.database.work_db_track import get_track, update_rating, update_num_rating
 from backend.database.work_db_comment import create_comment, update_comment, get_all_comments
 from backend.database.work_db_user_track import create_user_track, update_user_track,get_track_rating
@@ -14,7 +11,7 @@ from backend.database.work_user_db import get_user_id
 router = APIRouter()
 
 # вот это просто в оприори доделать
-# def delete_comment(db: Session, text: str):
+# def delete_comment(db: Session, text: src):
 #     ...
 
 
@@ -55,7 +52,7 @@ async def track_page(request: Request, db: Session = Depends(get_db)):
     for comment in comments_track:
         user_data = get_user_id(user_id,db)
         s_c = SendComments(
-            login = user_data.login,
+            login = user_data.username,
             comment=comment.comment
         )
         send_comment.append(s_c)
@@ -70,7 +67,7 @@ async def WritingCommentRating(request: Request, rating_comment: RatingComment, 
     user_id = int(request.cookies.get("user_id"))
     print("TrackRating")
     print(f"rating:{rating_comment}")
-    print(f"request.cookies.get(user_id): {request.cookies.get("user_id")}")
+    #print(f"request.cookies.get(user_id): {request.cookies.get("user_id")}")
     if rating_comment.commentInd == 0:
         print("RatingInd")
         rating_old  =get_track_rating(db, user_id, rating_comment.track_id)

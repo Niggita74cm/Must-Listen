@@ -2,13 +2,14 @@ from pydantic import BaseModel
 
 
 # class ActionComment(BaseModel):
-#     text: str
+#     text: src
 #     setting: bool = False
 #     close: bool = False
 #     track_id: int = -1
 #     rating: float
 #     ...
 # данные необходимые для формироывния вывода
+
 class ShowTrack(BaseModel):
     TrackSorting: str = "date_down"  # может быть "date_up" - вначале ранее, "date_down", "type", "RatingServer_up", "RatingServer_down" , "RatingSelf_up", "RatingSelf_down" (по умолчанию по дате сортировка)
     TrackName: str  # используется для поиска, либо глобального, либо по личным трекам

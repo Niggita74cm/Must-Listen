@@ -4,9 +4,9 @@ class Settings:
 settings = Settings()
 
 postgresql_settings = {
-    "pg_user": "VAA",
-    "pg_password": "password",
-    "pg_host": "localhost",
+    "pg_user": "vaa",
+    "pg_password": "nasty18",
+    "pg_name_service_docker": "postgres_db",
     "pg_port": "5432",
     "pg_database": "bip"
 }

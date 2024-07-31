@@ -77,7 +77,7 @@ def SortingTrackUser(IndSorting: str, list_tracks: list) -> list:
     return list_tracks
 
 # перевод данных в состояние которое можно выводить на фронт
-def OrganizationTrackUser(db: Session, user_id: int )-> list:
+def GetCorrectUserTracks(db: Session, user_id: int)-> list:
     user_tracks = get_user_track(db, user_id)
     ShowTrackUser = []
     for track_data in user_tracks:

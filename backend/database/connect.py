@@ -8,8 +8,8 @@ def check_have_tables(name: str, table: list):
             return True
     return False
 
-def get_engine(user, password, host, port, database):
-    url = f"postgresql://{user}:{password}@{host}:{port}/{database}"
+def get_engine(user, password, name_service_docker, port, database):
+    url = f"postgresql://{user}:{password}@{name_service_docker}:{port}/{database}"
     engine = create_engine(url)
     #metadata = MetaData()
     #metadata.reflect(bind=engine, schema="public")
@@ -45,7 +45,7 @@ def get_engine(user, password, host, port, database):
 
 engine = get_engine(postgresql_settings["pg_user"],
                         postgresql_settings["pg_password"],
-                        postgresql_settings["pg_host"],
+                        postgresql_settings["pg_name_service_docker"],
                         postgresql_settings["pg_port"],
                         postgresql_settings["pg_database"])
 def get_session():

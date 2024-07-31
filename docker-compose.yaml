@@ -1,0 +1,28 @@
+services:
+  frontend:
+    build: ./vue-music
+    volumes:
+      - ./vue-music/:/media/linux_anvi/18C0ED51C0ED3622/bip/Must-Listen/vue-music
+    ports:
+      - 8080:8080
+    depends_on:
+      - web
+  postgres_db:
+    image: postgres:12.0-alpine
+    volumes:
+      - postgres_data:/media/linux_anvi/18C0ED51C0ED3622/bip/Must-Listen/data/
+    environment:
+      - POSTGRES_USER=vaa
+      - POSTGRES_PASSWORD=nasty18
+      - POSTGRES_DB=bip
+  web:
+    build: ./backend
+    command: uvicorn main:app --reload --host 0.0.0.0 --port 8000
+    volumes:
+      - ./backend/:/media/linux_anvi/18C0ED51C0ED3622/bip/Must-Listen/backend
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres_db
+volumes:
+  postgres_data:

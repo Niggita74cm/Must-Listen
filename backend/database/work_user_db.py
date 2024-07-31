@@ -31,7 +31,11 @@ def create_new_user(user_Create: UserCreate, db: Session):
     db.add(user)
     db.commit()
     db.refresh(user)
-    return user
+    print(f"all_users:")
+    all_users = get_all_users(db, user_Create.login)
+    for us in all_users:
+        print(us.login)
+        return us
 
 #удаление пользователя
 def delete_user(user_id: int, db: Session):

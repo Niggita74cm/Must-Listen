@@ -44,83 +44,45 @@
 
 <script>
 import MenuBarAuth from './MenuBarAuth.vue';
-
+import axios from "axios";
 export default {
   name: 'App',
   components: {
     MenuBarAuth,
   },
   data() {
+
     return {
       //ИЗНАЧАЛЬНО ПРИСЫЛАЕМ ОТСОРТИРОВАННОЕ ПО ПОПУЛЯРНОСТИ ТЕ ПО ОЦЕНКЕ
-      sortedResults: [
-        {
-          track_id: 1,
-          track_name: 'Wolves',
-          album_name: 'The Life Of Pablo',
-          artists: 'Kanye West',
-          popularity: 5,
-        },
-        {
-          track_id: 2,
-          track_name: 'Black Skinhead',
-          album_name: 'Yeezus',
-          artists: 'Kanye West',
-          popularity: 4,
-        },
-        {
-          track_id: 3,
-          track_name: 'Серпантин',
-          album_name: 'Great Depression',
-          artists: 'Markul',
-          popularity: 3,
-        },
-        {
-          track_id: 4,
-          track_name: 'False Alarm',
-          album_name: 'Starboy',
-          artists: 'The Weeknd',
-          popularity: 4,
-        },
-        {
-          track_id: 5,
-          track_name: 'Положение',
-          album_name: 'Уроборос: Улица 36',
-          artists: 'Скриптонит',
-          popularity: 5,
-        },
-        {
-          track_id: 6,
-          track_name: 'FUK SUMN',
-          album_name: 'VULTURES 1',
-          artists: 'Kanye West',
-          popularity: 4,
-        },
-        {
-          track_id: 7,
-          track_name: 'Chlorine',
-          album_name: 'Trench',
-          artists: 'Twenty One Pilots',
-          popularity: 3.8,
-        },
-      ],
-      
+      sortedResults: [],
+      InfoAboutTypePageTracks: {
+        TypeSorting: 'date_down',
+        NumberPage: 1
+      }
     };
   },
   methods: {
+    getUserTracks(){
+      axios.get(`/MainPage?NumberPage=${this.InfoAboutTypePageTracks.NumberPage}&TypeSorting=${this.InfoAboutTypePageTracks.TypeSorting}`)
+          .then((res) => {
+            this.sortedResults = res.data;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+    },
     goToMusicPage(result) {
         this.$router.push({ name: 'MusicPage', params: { id: result.id } });
       },
     sortByPopularity() {
-      // в this.sortedResults запрашиваем отсортированное по популярности
-      //строчка ниже - заглушка, нужно удалить
+      //ТАК СОРТИРОВКА ПО ПОПУЛЯРНОСТИ(ПО ОЦЕНКАМ В ОБЩЕМ)
       this.sortedResults = this.sortedResults.slice().sort((a, b) => b.popularity - a.popularity);
     },
     sortByMyRatings() {
-      // логика сортировки по вашим оценкам
+      //ТАК СОРТИРОВКА ПО ПОПУЛЯРНОСТИ(ПО ОЦЕНКАМ ТОЛЬКО ПОЛЬЗОВАТЕЛЯ)
     },
-    sortByMyComments() {
-      // логика сортировки по вашим комментариям
+    sortByData() {
+      //ТАК СОРТИРОВКА ПО ПОПУЛЯРНОСТИ(ПО ДАТЕ)
     },
     toggleSortButton(button) {
       const buttons = document.querySelectorAll('.sorting-button');
@@ -134,9 +96,12 @@ export default {
       } else if (buttonText === 'Мои оценки') {
         this.sortByMyRatings();
       } else if (buttonText === 'Мои комментарии') {
-        this.sortByMyComments();
+        this.sortByData();
       }
     },
+  },
+  created() {
+        this.getUserTracks();
   },
 };
 </script>
@@ -147,7 +112,7 @@ export default {
 .content-container {
   position: relative;
   width: 100vw;
-  height: calc(100vh - /* высота MenuBarAuth */);
+  height: calc(100vh /* - высота MenuBarAuth */);
 }
 
 .main-title-container {

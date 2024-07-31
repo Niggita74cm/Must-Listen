@@ -3,11 +3,11 @@ from backend.database.models import User
 from backend.database.work_user_db import get_user, get_user_id
 from backend.database.connect import get_db
 from fastapi import APIRouter
-from fastapi import Depends, Request, Cookie
+from fastapi import Depends, Request
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import true
-from backend.model.models_auth import UserLogin, UserGet, CodeAuth2
+from backend.model.models_auth import UserLogin, UserGet, CodeAuth2, UserLoginResponse
 from backend.api.form.form_auth import LoginForm
 from fastapi.responses import RedirectResponse
 import smtplib
@@ -17,22 +17,17 @@ from starlette.responses import Response
 
 
 router = APIRouter()
-@router.get("/")
-def login():
-    print("Get list authentication")
-    return {"Get list": "auth"}
-
-
-@router.post("/", response_model=UserLogin)
-async def login(current_user: UserLogin, db: Session = Depends(get_db)):
-    if current_user.identification == true():
-        response = RedirectResponse(url=f"/identification", status_code=HTTP_303_SEE_OTHER)
-        return response
+@router.post("/", response_model= UserLoginResponse)
+async def login(current_user: UserLogin, db: Session = Depends(get_db), response: Response = None):
     print("Post data authentication")
     form = LoginForm(current_user)
     await form.load_data()
     if await form.is_valid():
         try:
+            result = UserLoginResponse(
+                second_factor= False,
+                access_user = False
+            )
             Get_user = UserGet(
                 login=form.login,
                 password=form.password
@@ -40,20 +35,25 @@ async def login(current_user: UserLogin, db: Session = Depends(get_db)):
             user: User = get_user(Get_user, db=db)
             if user is None:
                 print("User does not exist or wrong password")
-                response = RedirectResponse(url="/", status_code=HTTP_303_SEE_OTHER)
             else:
                 print("Logged in successfully")
+                result.access_user = True
                 if user.auth2 == true():
                     print("authentication two factor")
-                    response = RedirectResponse(url=f"/auth2", status_code=HTTP_303_SEE_OTHER)
+                    result.second_factor = True
                 else:
+                    response.set_cookie(key="user_id", value=str(user.id), httponly=True, samesite="lax")
                     print("no authentication two factor")
-                    response = RedirectResponse(url="/app/LK", status_code=HTTP_303_SEE_OTHER)
-                response.set_cookie(key="user_id", value=user.id, secure=True)
-            return response
+            print(result)
+            return result
         except HTTPException:
             return {"message": "Invalid credentials"}
-#auth2_data = {}
+
+
+
+
+
+#ПЕРЕДЕЛАТЬ
 @router.get("/auth2")
 async def auth2(request: Request, db: Session = Depends(get_db)):
     print("Get Auth2")

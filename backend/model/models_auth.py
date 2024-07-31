@@ -7,7 +7,7 @@ class UserCreate(BaseModel):
     password: str
 #используется для  идентификации (получение инфы с фронта)
 class UserCreateFormPost(BaseModel):
-    login: str
+    username: str
     email: str
     password: str
     confirmPassword: str
@@ -15,7 +15,16 @@ class UserCreateFormPost(BaseModel):
 class UserLogin(BaseModel):
     login: str
     password: str
-    identification: bool #так этого нет на фронте, но в теории должно быть так как вроде как перессылка по url на беке происходит
+class UserLoginResponse(BaseModel):
+    second_factor: bool
+    access_user: bool
+
+
+
+
+
+
+
 #нужно для аутентификации пользователя (для фронта не важно)
 class UserGet(BaseModel):
     login: str

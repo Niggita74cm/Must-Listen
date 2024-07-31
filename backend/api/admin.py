@@ -5,14 +5,8 @@ from sqlalchemy.orm import Session
 from backend.model.models_admin import NameDB
 from backend.services.LoadTrackDB import LoadTrackDB
 
-from backend.model.models_auth import UserCreate
-from backend.database.work_user_db import create_new_user, delete_user
 #from backend.database.work_db_track import delete_all_track_users
 #from backend.database.work_db_track import get_all_comments,  delete_comment, delete_all_comments_user
-from backend.api.form.form_identific import UserCreateForm
-from fastapi.responses import RedirectResponse
-from starlette.status import HTTP_303_SEE_OTHER
-from sqlalchemy.exc import IntegrityError
 
 router = APIRouter()
 user_db = [None]

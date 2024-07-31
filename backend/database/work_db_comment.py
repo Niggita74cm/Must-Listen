@@ -43,7 +43,7 @@ def delete_all_comments_user(db: Session, user_id: int):
     db.delete(delete_tracks)
     db.commit()
 
-# def delete_comment(db: Session, user_id: int, track_id: int, comment_text: str):
+# def delete_comment(db: Session, user_id: int, track_id: int, comment_text: src):
 #     all_comment = get_comments_for_user(db, user_id)
 #     for comment in all_comment:
 #         if comment.track_id == track_id and comment.comment == comment_text:

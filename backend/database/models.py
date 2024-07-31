@@ -8,7 +8,7 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     auth2 = Column(Boolean, nullable=False)
     __table_args__ = (
-        UniqueConstraint('login', 'hashed_password', name='unique_login_passwd'),
+        UniqueConstraint('login', name='unique_login'),
     )
 
 

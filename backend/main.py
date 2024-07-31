@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from backend.base_auth import api_router as web_app_router
 from fastapi.middleware.cors import CORSMiddleware
 
+
 def include_router(app):
     app.include_router(web_app_router)
 def create_tables():
@@ -24,23 +25,22 @@ origins = ["http://localhost:8080/"]
 
 app.add_middleware(
    CORSMiddleware,
-  allow_origins=origins,
+    allow_origins=["*"],
    allow_credentials=True,
    allow_methods=["*"],
   allow_headers=["*"],
 )
 
 @app.on_event("startup")
-async def app_startup():
+async def startup_event():
     await check_db_connected()
 
 
 @app.on_event("shutdown")
-async def app_shutdown():
+async def shutdown_event():
     await check_db_disconnected()
 
 
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, port=8000, host="127.0.0.1")
+# if __name__ == "__main__":
+#     uvicorn.run(app, port=8000, host="0.0.0.0")
