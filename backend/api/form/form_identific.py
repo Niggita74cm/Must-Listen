@@ -1,6 +1,5 @@
 import re
 from backend.model.models_auth import UserCreateFormPost
-from typing import List
 from backend.database.work_user_db import get_all_users
 from sqlalchemy.orm import Session
 regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'

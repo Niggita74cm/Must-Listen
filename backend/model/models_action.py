@@ -11,7 +11,7 @@ from pydantic import BaseModel
 # данные необходимые для формироывния вывода
 
 class ShowTrack(BaseModel):
-    TrackSorting: str = "date_down"  # может быть "date_up" - вначале ранее, "date_down", "type", "RatingServer_up", "RatingServer_down" , "RatingSelf_up", "RatingSelf_down" (по умолчанию по дате сортировка)
+    TrackSorting: str = "RatingServer_down"  # может быть "date_up" - вначале более ранее, "date_down", "RatingServer_up", "RatingServer_down" , "RatingSelf_up", "RatingSelf_down" (по умолчанию по рейтингу сервера сортировка)
     TrackName: str  # используется для поиска, либо глобального, либо по личным трекам
     SearchIndic: bool  # переход на режим поиска true- поиск, false- работа с личными треками
     NumberPage: int = 1  # страница личных треков, треки разделены по 20 штук на страницу

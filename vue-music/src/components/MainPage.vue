@@ -45,6 +45,7 @@
 <script>
 import MenuBarAuth from './MenuBarAuth.vue';
 import axios from "axios";
+//ВОЗМОЖНО НАДО ДОБАВИТЬ ДЕЛЕНИЕ НА СТРАНИЦЫ ДЛЯ ТРЕКОВ(ТИП ЧТОБЫ НЕ СРАЗУ ВСЕ ТРЕКИ ФРОНТ ПОЛУЧАЛ)
 export default {
   name: 'App',
   components: {
@@ -56,7 +57,7 @@ export default {
       //ИЗНАЧАЛЬНО ПРИСЫЛАЕМ ОТСОРТИРОВАННОЕ ПО ПОПУЛЯРНОСТИ ТЕ ПО ОЦЕНКЕ
       sortedResults: [],
       InfoAboutTypePageTracks: {
-        TypeSorting: 'date_down',
+        TypeSorting: 'RatingServer_down',
         NumberPage: 1
       }
     };
@@ -76,13 +77,19 @@ export default {
       },
     sortByPopularity() {
       //ТАК СОРТИРОВКА ПО ПОПУЛЯРНОСТИ(ПО ОЦЕНКАМ В ОБЩЕМ)
-      this.sortedResults = this.sortedResults.slice().sort((a, b) => b.popularity - a.popularity);
+      this.InfoAboutTypePageTracks.TypeSorting = 'RatingServer_down'
+      this.getUserTracks()
+      //this.sortedResults = this.sortedResults.slice().sort((a, b) => b.popularity - a.popularity);
     },
     sortByMyRatings() {
       //ТАК СОРТИРОВКА ПО ПОПУЛЯРНОСТИ(ПО ОЦЕНКАМ ТОЛЬКО ПОЛЬЗОВАТЕЛЯ)
+      this.InfoAboutTypePageTracks.TypeSorting = 'RatingSelf_down'
+      this.getUserTracks()
     },
     sortByData() {
       //ТАК СОРТИРОВКА ПО ПОПУЛЯРНОСТИ(ПО ДАТЕ)
+      this.InfoAboutTypePageTracks.TypeSorting = 'date_down'
+      this.getUserTracks()
     },
     toggleSortButton(button) {
       const buttons = document.querySelectorAll('.sorting-button');

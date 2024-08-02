@@ -9,10 +9,9 @@
 
     <div class="container">
       <h2>Изменить профиль</h2>
-
       <div class="form-group">
         <h4>Имя пользователя</h4>
-        <p><b>Текущее имя пользователя:</b> {{ currentData[0].username }}</p>
+        <p><b>Текущее имя пользователя:</b> {{ UserInfo.username }}</p>
         <div class="input-group">
           <input type="text" id="username" v-model="newUsername" class="form-control input-narrow" />
           <div class="input-group-append ml-2">
@@ -21,11 +20,10 @@
         </div>
         <small class="form-text text-muted" v-if="usernameValidationMessage">{{ usernameValidationMessage }}</small>
       </div>
-
-
       <div class="form-group">
+
   <h4>Email</h4>
-  <p><b>Текущий email:</b> {{ currentData[0].email }}</p>
+  <p><b>Текущий email:</b> {{ UserInfo.email }}</p>
   <div class="input-group">
     <input type="email" id="email" v-model="newEmail" class="form-control input-narrow" />
     <div class="input-group-append ml-2">
@@ -61,7 +59,7 @@
       </div>
 
      
-      <div v-if="this.currentData[0].username === 'admin'" class="comment-actions">
+      <div v-if="this.UserInfo.username === 'anvi_admin' || this.UserInfo.username === 'sasha_admin' || this.UserInfo.username === 'nikita_admin' || this.UserInfo.username === 'masha_admin'" class="comment-actions">
         <div class="form-group">
   <h4>Удаление пользователя</h4>
   <div class="input-group">
@@ -100,117 +98,148 @@
 
 <script>
 import MenuBar from '@/components/MenuBar.vue'
-
+import axios from "axios";
 export default {
   name: 'ProfilePage',
   components: {
     MenuBar
   },
   data() {
+          //     username: 'admin',
+          // email: 'sasha@smth.com',
+          // password: '123',
+          // second_factor: true,
     return {
-      ///ДАННЫЕ С СЕРВЕРА
-      currentData: [
-        {
-          username: 'admin',
-          email: 'sasha@smth.com',
-          password: '123',
-          second_factor: true,
-        }
-      ],
+      UserInfo:{
+          username: '',
+          email: '',
+          second_factor: false,
+          NumberPrivileges: ''
+      },
+      ConfigurationOptions:{
+        SettingsCommand: '',
+        NewData: '',
+        OldData: ''
+      },
+      SettingsPostResponse:{
+            ResultCommand: false,
+            Message: ''
+      }
     }
   },
   methods: {
+    getUserInfo(){
+      axios.get('/SettingsF')
+          .then((res) => {
+            this.UserInfo.email = res.data.email;
+            this.UserInfo.username = res.data.username
+            this.UserInfo.NumberPrivileges = res.data.NumberPrivileges
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+    },
+
+    PostUpdateRequest(NewData, Command, OldData){
+      this.ConfigurationOptions.SettingsCommand = Command
+      this.ConfigurationOptions.NewData = NewData
+      this.ConfigurationOptions.OldData = OldData
+      const DataFromPost = JSON.stringify(this.ConfigurationOptions);
+          axios.post('/SettingsF', DataFromPost, {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          })
+          .then((response) => {
+            this.SettingsPostResponse.Message=response.data.Message;
+            this.SettingsPostResponse.ResultCommand = response.data.ResultCommand;
+          })
+          .catch((error) => {
+            console.error('Authentication error:', error);
+          });
+    },
     updateUsername() {
-      const currentUsername = this.currentData[0].username;
       const newUsername = this.newUsername.trim();
-      this.currentData[0].username='';
-      ///ТУТ КАКАЯ ТО ПРОВЕРКА МОЖНО ЛИ ИЗМЕНИТЬ
-      if (!newUsername) {
-        this.usernameValidationMessage = 'Недопустимое имя пользователя';
-        this.currentData[0].username = currentUsername;
-        this.newUsername = '';
-      } else if (newUsername === currentUsername) {
-        this.usernameValidationMessage = 'Недопустимое имя пользователя';
-        this.currentData[0].username = currentUsername;
-        this.newUsername = '';
-      } else if (newUsername.toLowerCase() === 'админ') {
-        this.usernameValidationMessage = 'Недопустимое имя пользователя';
-        this.currentData[0].username = currentUsername;
-        this.newUsername = '';
-      } else {
-        ///ТУТ ШЛЕМ ЧТО
-        this.currentData[0].username = newUsername;
-        this.usernameValidationMessage = 'Изменено';
-        this.newUsername = '';
+      this.PostUpdateRequest(newUsername, 'UpdateUsername',  '');
+      if (this.SettingsPostResponse.ResultCommand===true){
+        this.UserInfo.username = newUsername;
+        this.usernameValidationMessage = 'Логин изменен';
       }
+      else {
+        this.usernameValidationMessage = this.SettingsPostResponse.Message;
+      }
+      this.newUsername = '';
     },
-    ///ДАЛЬШЕ АНАЛОГИЧНО
+
     updateEmail() {
-    const currentEmail = this.currentData[0].email;
-    const newEmail = this.newEmail.trim();
-    this.currentData[0].email='';
-
-    if (!newEmail) {
-      this.emailValidationMessage = 'Недопустимый email';
-      this.currentData[0].email = currentEmail;
-      this.newEmail= '';
-    } else if (newEmail === currentEmail) {
-      this.emailValidationMessage = 'Недопустимый email';
-      this.currentData[0].email = currentEmail;
-      this.newEmail= '';
-    } else {      
-      this.currentData[0].email = newEmail;
-      this.emailValidationMessage = 'Изменено';
-      this.newEmail = ''; // Очистка поля ввода после успешного изменения
-    }
-    
-    },
-    updatePassword() {
-      const currentPass = this.currentData[0].password;
-      const newPass = this.confirmPassword.trim();
-      const enterPass = this.password.trim();
-
-      if (enterPass === currentPass) {
-        this.passValidationMessage = 'Изменено';
-        this.currentData[0].password = newPass;
-        this.password = '';
-        this.confirmPassword = '';
-      } else {      
-        this.passValidationMessage = 'Неверный пароль';
-        this.password = '';
-        this.confirmPassword = '';
+      const newEmail = this.newEmail.trim();
+      this.PostUpdateRequest(newEmail, 'UpdateEmail',  '');
+      if (this.SettingsPostResponse.ResultCommand===true){
+        this.UserInfo.email = newEmail;
+        this.emailValidationMessage = 'Электронная почта изменена';
       }
-},
+      else {
+        this.emailValidationMessage = this.SettingsPostResponse.Message;
+      }
+      this.newEmail = '';
+    },
+
+    updatePassword() {
+      const newPass = this.confirmPassword.trim();
+      const currentPass = this.password;
+      this.PostUpdateRequest(newPass, 'UpdatePassword', currentPass);
+      if (this.SettingsPostResponse.ResultCommand===true){
+        this.passValidationMessage = 'Пароль изменен';
+      }
+      else {
+        this.passValidationMessage = this.SettingsPostResponse.Message;
+      }
+      this.confirmPassword = '';
+      this.password = '';
+    },
 
     toggleSecondFactor() {
-      // Код для обработки изменения двухфакторной аутентификации
-      console.log('Двухфакторная аутентификация:', this.secondFactor);
+      const newSecondFactor = this.secondFactor;
+      this.PostUpdateRequest(String(newSecondFactor), 'UpdateSecondFactor', '');
+      if (this.SettingsPostResponse.ResultCommand===true) {
+        this.UserInfo.second_factor = newSecondFactor;
+      }
     },
-
     ExitfromML(){
+      //ДОДЕЛАТЬ
+      this.PostUpdateRequest('', 'LogOutAccount', '');
       this.$router.push('/');
     },
-
-    deleteUser(){
-        const userDel = this.userDel.trim();
-       console.log(userDel);
-      if (userDel === 'sasha') {
-        this.deleteValidationMessage = 'Пользователь удален';
-        this.userDel = '';
-        this.$forceUpdate();
-      } else {   
-        this.deleteValidationMessage = 'Пользователь не может быть удален или не существует';
-        this.userDel = '';
-        this.$forceUpdate(); 
-      } 
-         
+    DeleteYourSelf(){
+      //ДОБАВИТЬ ВО ФРОНТЕ
+      this.PostUpdateRequest('', 'DeleteYourself', '');
+      this.$router.push('/');
     },
+    deleteUser(){
 
+      //ДОДЕЛАТЬ
+      //   const userDel = this.userDel.trim();
+      //  console.log(userDel);
+      // if (userDel === 'sasha') {
+      //   this.deleteValidationMessage = 'Пользователь удален';
+      //   this.userDel = '';
+      //   this.$forceUpdate();
+      // } else {
+      //   this.deleteValidationMessage = 'Пользователь не может быть удален или не существует';
+      //   this.userDel = '';
+      //   this.$forceUpdate();
+      // }
+    },
+    deleteComment(){
+
+    }
 
   },
-  
+  created() {
+        this.getUserInfo();
+  },
   mounted() {
-    this.secondFactor = this.currentData[0].second_factor;
+    this.secondFactor = this.UserInfo.second_factor;
   }
 }
 </script>
