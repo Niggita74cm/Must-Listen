@@ -41,6 +41,7 @@ def update_user_track(db: Session, user_track: SaveTrack):
             return up_rating
 #
 def delete_tracks_users(db: Session, user_id: int):
-    delete_track = db.query(User_track).filter(User_track.user_id == user_id).all()
-    db.delete(delete_track)
+    delete_tracks = db.query(User_track).filter(User_track.user_id == user_id).all()
+    for track in delete_tracks:
+        db.delete(track)
     db.commit()

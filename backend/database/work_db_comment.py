@@ -39,8 +39,9 @@ def get_all_comments(db: Session, track_id: int):
     return all_data
 
 def delete_all_comments_user(db: Session, user_id: int):
-    delete_tracks = db.query(Comment).filter(Comment.user_id == user_id).all()
-    db.delete(delete_tracks)
+    delete_comments = db.query(Comment).filter(Comment.user_id == user_id).all()
+    for comment in delete_comments:
+        db.delete(comment)
     db.commit()
 
 # def delete_comment(db: Session, user_id: int, track_id: int, comment_text: src):

@@ -10,7 +10,7 @@ class Verification:
     def CheckNewLogin(self, NewLogin):
         if not len(NewLogin) > 0:
             self.errors += "[Логин не должен быть пустым] "
-        if len(get_all_users(self.db, NewLogin)) != 0:
+        if get_all_users(self.db, NewLogin) != None:
             self.errors += "[Этот логин уже существует] "
     def CheckNewPassword(self, NewPassword, ConfirmPassword):
         if not NewPassword or not len(NewPassword) >= 8:

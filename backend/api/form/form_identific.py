@@ -22,7 +22,7 @@ class UserCreateForm:
             self.errors += "[login must be] "
         if self.password != self.confirmPassword:
             self.errors += "[Confirm Password does not match] "
-        if len(get_all_users(db, self.login)) != 0:
+        if get_all_users(db, self.login) != None:
             print(len(get_all_users(db, self.login)))
             self.errors += "[This login already exists]"
         if not self.errors:

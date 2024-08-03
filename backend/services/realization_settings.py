@@ -2,12 +2,15 @@ from sqlalchemy.orm import Session
 
 from backend.services.checking_input_data import Verification
 from backend.model.models_user import SettingsPostResponse
-from backend.database.work_user_db import get_user_id, delete_user
+from backend.database.work_user_db import get_user_id, delete_user, get_all_users
 from backend.database.work_user_db import (update_user_auth, update_user_login,
                                            update_user_email, update_user_password
                                            )
 from backend.database.work_db_user_track import delete_tracks_users
 from backend.database.work_db_comment import delete_all_comments_user
+
+from backend.services.LoadTrackDB import LoadTrackDB
+
 class RealizationSettings:
     def __init__(self, db: Session, user_id: int):
         self.db = db
@@ -46,20 +49,52 @@ class RealizationSettings:
     def UpdateSecondFactor(self, NewSecondFactor):
         self.result.Message = ''
         self.result.ResultCommand = True
+        print(f"NewSecondFactor:{NewSecondFactor}")
         if NewSecondFactor == "false":
+            print('Second Factor Disabled')
             update_user_auth(user_id=self.user_id, up_data=False, db=self.db)
         else:
+            print('Second Factor Enabled')
             update_user_auth(user_id=self.user_id, up_data=True, db=self.db)
         return self.result
     def DeleteYourself(self):
         self.result.Message = ''
         self.result.ResultCommand = True
-        delete_user(user_id=self.user_id, db=self.db)
         delete_tracks_users(db=self.db, user_id=self.user_id)
         delete_all_comments_user(db=self.db, user_id=self.user_id)
+        delete_user(user_id=self.user_id, db=self.db)
         return self.result
     def LogOutAccount(self, request):
         self.result.Message = ''
         self.result.ResultCommand = True
         request.cookies.clear()
+        return self.result
+
+
+class RealizationAdminSettings:
+    def __init__(self, db: Session, user_id: int):
+        self.db = db
+        self.user_id = user_id
+        self.OldData = get_user_id(user_id=user_id, db=db)
+        self.result = SettingsPostResponse(ResultCommand=False, Message='')
+    def DeleteUser(self, UsersUsername: str):
+        user_del = get_all_users(login=UsersUsername, db=self.db)
+        if user_del != None:
+            print(f"Delete User: {user_del.login}")
+            delete_tracks_users(db=self.db, user_id=user_del.id)
+            delete_all_comments_user(db=self.db, user_id=user_del.id)
+            delete_user(user_id=user_del.id, db=self.db)
+            self.result.Message = ''
+            self.result.ResultCommand = True
+        else:
+            self.result.ResultCommand = False
+            self.result.Message = f'User {UsersUsername} does not exist'
+        return self.result
+
+    def AddTracks(self, NameDatabaseTracks: str):
+        print(f'NameDatabaseTracks: {NameDatabaseTracks}')
+        LoadTrackDB(NameDatabaseTracks, self.db)
+        print("All Database Tracks Loaded")
+        self.result.Message = ''
+        self.result.ResultCommand = True
         return self.result

@@ -1,20 +1,20 @@
 from sqlalchemy import false, update
 from backend.services.security_util.hashing import Hasher
 from backend.database.models import User
-from backend.model.models_auth import UserCreate, UserGet
+from backend.model.models_auth import UserCreate, UserLogin
 from sqlalchemy.orm import Session
 
 #получение пользователей по логину
 def get_all_users(db: Session, login: str):
-    user = db.query(User).filter(User.login == login).all()
+    user = db.query(User).filter(User.login == login).first()
     return user
 #получение данных о пользователе по паролю и логину
-def get_user(user: UserGet, db: Session):
+def get_user(user: UserLogin, db: Session):
     user_ = get_all_users(db, user.login)
     result = None
-    for us in user_:
-        if Hasher.verify_password(user.password, us.hashed_password):
-            result = us
+    if user_ is not None:
+        if Hasher.verify_password(user.password, user_.hashed_password):
+            result = user_
     return result
 #получение данных о пользователе по id
 def get_user_id(user_id: int, db: Session):
@@ -31,11 +31,9 @@ def create_new_user(user_Create: UserCreate, db: Session):
     db.add(user)
     db.commit()
     db.refresh(user)
-    print(f"all_users:")
-    all_users = get_all_users(db, user_Create.login)
-    for us in all_users:
-        print(us.login)
-        return us
+    user = get_all_users(db, user_Create.login)
+    print(f"user login:{user.login}")
+    return user
 
 #удаление пользователя
 def delete_user(user_id: int, db: Session):
@@ -46,10 +44,6 @@ def delete_user(user_id: int, db: Session):
 
 #включение выключение аутентификации
 def update_user_auth(user_id: int, up_data: bool, db: Session):
-    if up_data == True:
-        up_data = False
-    else:
-        up_data = True
     db.execute(update(User).where(User.id == user_id).values(auth2=up_data))
     db.commit()
     user = get_user_id(user_id, db)
@@ -73,9 +67,4 @@ def update_user_email(user_id: int, up_data: str, db: Session):
     db.commit()
     user = get_user_id(user_id, db)
     db.refresh(user)
-#получение данных о пользователе по id
-def get_user_login(login: str, db: Session):
-    user = db.query(User).filter(User.login == login).first()
-    return user
-
 

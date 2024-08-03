@@ -12,17 +12,13 @@
                   <div class="mb-3">
                   <label for="passwrd_only" class="form-label">Одноразовый пароль</label>
                     <div class="input-group">
-                      <input v-model="formLogin.passwrd_only" type="password" class="form-control" id="passwrd_only">
+                      <input v-model="formLogin.code" type="password" class="form-control" id="passwrd_only">
                       <button @click="togglePasswordVisibility('passwrd_only')" type="button" class="btn btn-outline-secondary btn-sm" >Показать пароль</button>
                     </div>
                   </div>
                   
                   <button class="btn btn-dark d-block mt-3" @click="IsLogin" type="button">Войти</button>                  
-                  <div v-if="!isLoginSuccessful" class="mt-3 text-danger">Неверный одноразовый пароль</div>                
-                  
-
-                  
-
+                  <div v-if="!isLoginSuccessful" class="mt-3 text-danger">Неверный одноразовый пароль</div>
               </div>
   
   
@@ -34,35 +30,44 @@
   </template>
   
   <script>
-  
+  import axios from "axios";
   
   export default {
     name: 'authentication_registration',
       data(){
         return {
-          isLoginSuccessful: true,
+          isLoginSuccessful: false,
           formLogin: {
-            login: '',
-            passwrd: '',
-            passwrd_only: ''
+            code: ''
           },
         }
       },
       methods: {
-
-        IsLogin() {
-          ///ТУТ ВМЕСТО ЭТОЙ ПРОВЕРКИ НАДО ОТПРАВЛЯТЬ НА СЕРВЕР ДАННЫЕ И ДЕЛАТЬ ПРОВЕРКУ 
-        if (this.formLogin.passwrd_only === '123') {
-          this.isLoginSuccessful = true;
-          this.$router.push('/MainPage');
-         } else {
-        this.isLoginSuccessful = false;
-        }
+        SendOneTimePassword(){
+          axios.get('/2factor')
+          .then((res) => {
+            console.log("One-time password has been sent")
+            console.log(res)
+          })
+          .catch((error) => {
+            console.error(error);
+          });
         },
-        
-        resetForm() {
-        this.formLogin.login = '';
-        this.formRegisr.passwrd = '';
+        IsLogin() {
+
+          const DataFromPost = JSON.stringify(this.formLogin);
+          axios.post('/2factor', DataFromPost, {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          })
+          .then((response) => {
+            this.isLoginSuccessful = response.data.isLoginSuccessful;
+            this.$router.push('/MainPage');
+          })
+          .catch((error) => {
+            console.error('Authentication error:', error);
+          });
         },
   
         togglePasswordVisibility(inputId) {
@@ -77,9 +82,9 @@
         LoginUser(){
           console.log('Попытка входа')
         },
-  
-        
-  
+      },
+      created() {
+        this.SendOneTimePassword();
       }
   }
   </script>

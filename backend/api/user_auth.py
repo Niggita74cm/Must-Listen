@@ -7,17 +7,16 @@ from fastapi import Depends, Request
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import true
-from backend.model.models_auth import UserLogin, UserGet, CodeAuth2, UserLoginResponse
+from backend.model.models_auth import UserLogin,  CodeAuth2, UserLoginResponse, CodeAuth2Response
 from backend.api.form.form_auth import LoginForm
-from fastapi.responses import RedirectResponse
 import smtplib
 from backend.services.security_util.generate_pswd import generate_one_time_psswd
 from starlette.responses import Response
-
+from email.mime.text import MIMEText
 
 
 router = APIRouter()
-@router.post("/", response_model= UserLoginResponse)
+@router.post("/", response_model=UserLoginResponse)
 async def login(current_user: UserLogin, db: Session = Depends(get_db), response: Response = None):
     print("Post data authentication")
     form = LoginForm(current_user)
@@ -25,10 +24,10 @@ async def login(current_user: UserLogin, db: Session = Depends(get_db), response
     if await form.is_valid():
         try:
             result = UserLoginResponse(
-                second_factor= False,
-                access_user = False
+                second_factor=False,
+                access_user=False
             )
-            Get_user = UserGet(
+            Get_user = UserLogin(
                 login=form.login,
                 password=form.password
             )
@@ -50,52 +49,53 @@ async def login(current_user: UserLogin, db: Session = Depends(get_db), response
             return {"message": "Invalid credentials"}
 
 
-
-
-
-#ПЕРЕДЕЛАТЬ
-@router.get("/auth2")
-async def auth2(request: Request, db: Session = Depends(get_db)):
+@router.get("/2factor")
+async def auth2(request: Request, db: Session = Depends(get_db), response: Response = None):
     print("Get Auth2")
     try:
+
         smtpObj = smtplib.SMTP('smtp.gmail.com', 587)
         smtpObj.starttls()
         smtpObj.login('vamp.be.live@gmail.com', 'pami ieuq ywqu vxgj')
         one_time_password = CodeAuth2(
             code=generate_one_time_psswd(6)
         )
-        user_id = request.cookies.get("user_id")
+        user_id = int(request.cookies.get("user_id"))
         print(f'user_id: {user_id}')
         user = get_user_id(user_id, db)
-        print(user.id)
         email_user = user.email
-        print(email_user)
-        smtpObj.sendmail("vamp.be.live@gmail.com", email_user,
-                         f'Code password for Must Music: {one_time_password.code}')
+        print(f'email_user: {email_user}')
 
-        response = Response()
-        response.set_cookie(key="code", value=one_time_password.code,  secure=True, httponly=True)
-        print(one_time_password.code)
+        body_msg = f'Code password for Must Music: {one_time_password.code}'
+        print(body_msg)
+        msg = MIMEText(body_msg)
+        msg['Subject'] = "Must Music"
+        msg['From'] = 'vamp.be.live@gmail.com'
+        msg['To'] = email_user
+        smtpObj.send_message(msg=msg)
+        response.set_cookie(key="code", value=one_time_password.code,  secure=True, httponly=True, samesite="lax")
+        print(f'one_time_password.code: {one_time_password.code}')
     except HTTPException:
-        return {"message": "Invalid credentials"}
-    return response #вот это переделать и все
+        return "Invalid credentials"
+    return "One-time password sent successfully"
 
 
-@router.post("/auth2", response_model = CodeAuth2)
-async def auth2(code: CodeAuth2, request: Request, db: Session = Depends(get_db)):
+@router.post("/2factor", response_model=CodeAuth2Response)
+async def auth2(code: CodeAuth2, request: Request, db: Session = Depends(get_db), response: Response = None):
     print("Post Auth2")
-    user_id = request.cookies.get("user_id")
+    user_id = int(request.cookies.get("user_id"))
     code_get = request.cookies.get("code")
     user = get_user_id(user_id, db)
     email_user = user.email
-    print(email_user)
-    print(code_get)
+    print(f'email_user: {email_user}')
+    print(f'code_get: {code_get}')
     print(code.code)
+    access = False
     if code.code == str(code_get):
         print("Auth2 successful")
-        response = RedirectResponse(url="/app/LK", status_code=HTTP_303_SEE_OTHER)
-        response.set_cookie(key="user_id", value=user_id, secure=True)
-    else:
-        print("Auth2 not successful")
-        response = RedirectResponse(url="/", status_code=HTTP_303_SEE_OTHER)
-    return response
+        access = True
+        response.set_cookie(key="user_id", value=str(user_id), secure=True)
+    accessAuth2 = CodeAuth2Response(
+        isLoginSuccessful=access
+    )
+    return accessAuth2

@@ -1,3 +1,6 @@
+<!--ДОДЕЛАТЬ УДАЛЕНИЕ КОММЕНТАРИЕВ ДЛЯ АДМИНА: ГРУБО ГОВОРЯ ВВОД ДОЛЖЕН БЫТЬ:-->
+<!--ПОЛЬЗОВАТЕЛЬ ДЛЯ КОТОРОГО УДАЛИТЬ, НАЗВАНИЕ ТРЕКА С КОММЕНТАРИЕМ, ТЕКСТ КОММЕНТАРИЯ -->
+
 <template>
   <div id="app">
     <MenuBar />
@@ -36,13 +39,13 @@
 
       <div class="form-group mt-4">
       <h4>Пароль</h4>
-<div class="input-group">
-  <div class="form-group">
+  <div class="input-group">
+      <div class="form-group">
          <input type="password" id="password" v-model="password" class="form-control input-narrow" placeholder="Старый пароль"/>
       </div>
-       <div class="form-group">
+      <div class="form-group">
        <input type="password" id="confirmPassword" v-model="confirmPassword" class="form-control input-narrow" placeholder="Новый пароль" />
-       </div>
+      </div>
     <div class="input-group-append ml-2">
        <button class="btn btn-secondary" @click="updatePassword">Изменить</button>
     </div>
@@ -59,37 +62,42 @@
       </div>
 
      
-      <div v-if="this.UserInfo.username === 'anvi_admin' || this.UserInfo.username === 'sasha_admin' || this.UserInfo.username === 'nikita_admin' || this.UserInfo.username === 'masha_admin'" class="comment-actions">
-        <div class="form-group">
-  <h4>Удаление пользователя</h4>
-  <div class="input-group">
-    <input type="text" id="username2" v-model="userDel" class="form-control input-narrow" />
-    <div class="input-group-append ml-2">
-      <button class="btn btn-secondary" @click="deleteUser">Удалить</button>
-    </div>
-  </div>
-  <small class="form-text text-muted" v-if="deleteValidationMessage">{{ deleteValidationMessage }}</small>
-
-</div>
-
+  <div v-if="this.UserInfo.NumberPrivileges === 'admin'" class="comment-actions">
+    <div class="form-group">
+      <h4>Удаление пользователя</h4>
+      <div class="input-group">
+        <input type="text" id="username2" v-model="userDel" class="form-control input-narrow" />
+        <div class="input-group-append ml-2">
+          <button class="btn btn-secondary" @click="deleteUser">Удалить</button>
+        </div>
       </div>
-
-
-
-
-      <div class="exit-button mt-4 d-flex align-items-center">
-      <button class="btn btn-secondary" @click="ExitfromML">Выход</button>
+      <small class="form-text text-muted" v-if="deleteValidationMessage">{{ deleteValidationMessage }}</small>
     </div>
 
 
-   
-
-
+    <div class="form-group">
+      <h4>Добавление треков:</h4>
+      <div class="input-group">
+        <input type="text" id="namedatabase" v-model="BDTracks" class="form-control input-narrow" />
+        <div class="input-group-append ml-2">
+          <button class="btn btn-secondary" @click="AddTracks">Добавить</button>
+        </div>
+      </div>
+      <small class="form-text text-muted" v-if="AddTracksValidationMessage">{{ AddTracksValidationMessage }}</small>
     </div>
 
-    
 
   </div>
+
+
+
+ <div class="exit-button mt-4 d-flex align-items-center">
+      <button class="btn btn-secondary" @click="ExitfromML">Выход</button>
+ </div>
+
+
+ </div>
+</div>
 
   
 </template>
@@ -105,10 +113,6 @@ export default {
     MenuBar
   },
   data() {
-          //     username: 'admin',
-          // email: 'sasha@smth.com',
-          // password: '123',
-          // second_factor: true,
     return {
       UserInfo:{
           username: '',
@@ -132,14 +136,15 @@ export default {
       axios.get('/SettingsF')
           .then((res) => {
             this.UserInfo.email = res.data.email;
-            this.UserInfo.username = res.data.username
-            this.UserInfo.NumberPrivileges = res.data.NumberPrivileges
+            this.UserInfo.username = res.data.username;
+            this.UserInfo.NumberPrivileges = res.data.NumberPrivileges;
+            this.UserInfo.second_factor = res.data.second_factor;
+            //this.secondFactor = this.UserInfo.second_factor;
           })
           .catch((error) => {
             console.error(error);
           });
     },
-
     PostUpdateRequest(NewData, Command, OldData){
       this.ConfigurationOptions.SettingsCommand = Command
       this.ConfigurationOptions.NewData = NewData
@@ -170,7 +175,6 @@ export default {
       }
       this.newUsername = '';
     },
-
     updateEmail() {
       const newEmail = this.newEmail.trim();
       this.PostUpdateRequest(newEmail, 'UpdateEmail',  '');
@@ -183,7 +187,6 @@ export default {
       }
       this.newEmail = '';
     },
-
     updatePassword() {
       const newPass = this.confirmPassword.trim();
       const currentPass = this.password;
@@ -197,7 +200,6 @@ export default {
       this.confirmPassword = '';
       this.password = '';
     },
-
     toggleSecondFactor() {
       const newSecondFactor = this.secondFactor;
       this.PostUpdateRequest(String(newSecondFactor), 'UpdateSecondFactor', '');
@@ -206,37 +208,47 @@ export default {
       }
     },
     ExitfromML(){
-      //ДОДЕЛАТЬ
       this.PostUpdateRequest('', 'LogOutAccount', '');
       this.$router.push('/');
     },
+
+
     DeleteYourSelf(){
       //ДОБАВИТЬ ВО ФРОНТЕ
       this.PostUpdateRequest('', 'DeleteYourself', '');
       this.$router.push('/');
     },
     deleteUser(){
-
-      //ДОДЕЛАТЬ
-      //   const userDel = this.userDel.trim();
-      //  console.log(userDel);
-      // if (userDel === 'sasha') {
-      //   this.deleteValidationMessage = 'Пользователь удален';
-      //   this.userDel = '';
-      //   this.$forceUpdate();
-      // } else {
-      //   this.deleteValidationMessage = 'Пользователь не может быть удален или не существует';
-      //   this.userDel = '';
-      //   this.$forceUpdate();
-      // }
+      const userDel = this.userDel.trim();
+      this.PostUpdateRequest(userDel, 'DeleteUser', '');
+      if (this.SettingsPostResponse.ResultCommand===true) {
+        this.deleteValidationMessage = 'Пользователь удален';
+      }
+      else{
+        this.deleteValidationMessage = this.SettingsPostResponse.Message;
+      }
+      this.userDel = '';
     },
     deleteComment(){
 
+    },
+
+    AddTracks(){
+      const NameDatabaseTracks = this.BDTracks.trim();
+      this.PostUpdateRequest(NameDatabaseTracks, 'AddTracks', '');
+      if (this.SettingsPostResponse.ResultCommand===true) {
+        this.AddTracksValidationMessage = 'Треки добавлены';
+      }
+      else{
+        this.AddTracksValidationMessage = this.SettingsPostResponse.Message;
+      }
+      this.userDel = '';
     }
 
   },
   created() {
         this.getUserInfo();
+        this.secondFactor = this.UserInfo.second_factor;
   },
   mounted() {
     this.secondFactor = this.UserInfo.second_factor;

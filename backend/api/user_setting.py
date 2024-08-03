@@ -8,7 +8,7 @@ from backend.database.work_db_user_track import delete_tracks_users
 from backend.database.work_db_comment import delete_all_comments_user
 
 from backend.services.check_admin_user import check_on_admin
-from backend.services.realization_settings import RealizationSettings
+from backend.services.realization_settings import RealizationSettings, RealizationAdminSettings
 router = APIRouter()
 
 #удаление себя
@@ -71,8 +71,13 @@ async def main_setting(request: Request, user_action: ConfigurationOptions, db: 
         return realization_settings.LogOutAccount(request=request)
 
 
-
-    # if check_on_admin(db, user_id) and user_action.delete_user == True:
-    #     print("delete user")
-    #     user_del = get_user_login(login=user_action.login, db=db)
-    #     delete_user(user_id=user_del.id, db=db)
+    if check_on_admin(db, user_id):
+        realization_admin_settings = RealizationAdminSettings(db=db, user_id=user_id)
+        if user_action.SettingsCommand == 'DeleteUser':
+            print("delete user")
+            return realization_admin_settings.DeleteUser(UsersUsername=user_action.NewData)
+        if user_action.SettingsCommand == 'AddTracks':
+            print("add tracks")
+            return realization_admin_settings.AddTracks(NameDatabaseTracks=user_action.NewData)
+        if user_action.SettingsCommand == 'DeleteComments':
+            ...
