@@ -4,9 +4,6 @@ from fastapi import Depends, Request
 from sqlalchemy.orm import Session
 from backend.model.models_user import UserInfo, ConfigurationOptions, SettingsPostResponse
 from backend.database.work_user_db import get_user_id
-from backend.database.work_db_user_track import delete_tracks_users
-from backend.database.work_db_comment import delete_all_comments_user
-
 from backend.services.check_admin_user import check_on_admin
 from backend.services.realization_settings import RealizationSettings, RealizationAdminSettings
 router = APIRouter()

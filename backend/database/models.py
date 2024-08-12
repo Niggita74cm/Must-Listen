@@ -42,7 +42,7 @@ class User_track(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     track_id = Column(Integer, ForeignKey('track.id'), nullable=False)
-    ratingSelf = Column(Float, nullable=False)
+    ratingSelf = Column(Integer, nullable=False)
     date = Column(TIMESTAMP, nullable=False)
 
     user = relationship('User', remote_side='User_track.user_id')

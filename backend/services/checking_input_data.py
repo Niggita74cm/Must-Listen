@@ -51,7 +51,7 @@ class Verification:
             return True
         print(self.errors)
         return False
-    def CheckAllNewData(self, NewLogin, NewPassword, NewEmail, ConfirmPassword):
+    async def CheckAllNewData(self, NewLogin, NewPassword, NewEmail, ConfirmPassword):
         self.CheckNewLogin(NewLogin)
         self.CheckNewPassword(NewPassword, ConfirmPassword)
         self.CheckNewEmail(NewEmail)

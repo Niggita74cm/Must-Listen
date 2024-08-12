@@ -1,30 +1,19 @@
+from typing import List
+
 from pydantic import BaseModel
 
 
-# class ActionComment(BaseModel):
-#     text: src
-#     setting: bool = False
-#     close: bool = False
-#     track_id: int = -1
-#     rating: float
-#     ...
-# данные необходимые для формироывния вывода
-
-class ShowTrack(BaseModel):
-    TrackSorting: str = "RatingServer_down"  # может быть "date_up" - вначале более ранее, "date_down", "RatingServer_up", "RatingServer_down" , "RatingSelf_up", "RatingSelf_down" (по умолчанию по рейтингу сервера сортировка)
-    TrackName: str  # используется для поиска, либо глобального, либо по личным трекам
-    SearchIndic: bool  # переход на режим поиска true- поиск, false- работа с личными треками
-    NumberPage: int = 1  # страница личных треков, треки разделены по 20 штук на страницу
-    Track_id: int = -1# -1 - работа на личном кабинете, все остальное переход на нажатый трек(в теории есть шанс что перессылка введется на фронте тогда не нужно)
-    #Setting: bool  # переход на страницу настройки пользователя(пенонятно нужно или нет)
-    #ClickTrack: bool = False # если true- переход на страницу треков, false- другая работа(не понятно нужно ли это)
-
+class TrackSearched(BaseModel):
+    TrackName: str
 
 # используется для формирования вывода в личном кабинете пользователя
 class LKTrack(BaseModel):
+    track_id: int
     TrackName: str
     ratingSelf: int
     ratingService: float
+    AlbumName: str
+    artists: str
     date: str
     type: str
 
@@ -36,3 +25,36 @@ class SearchResults(BaseModel):
     album_name: str
     artists: str
     rating: float
+    popularity: int
+
+
+
+
+class TrackComments(BaseModel):
+    comment_id: int
+    user_name: str
+    time: str
+    text_comment: str
+class SelectedTrack(BaseModel):
+    track_id: int
+    track_name: str
+    album_name: str
+    artists: str
+    rating: float
+    userRating: int
+    popularity: int
+    duratind_ms: int
+    url_images: str
+    username: str
+    track_comments: List[TrackComments]
+
+class FormPostRatingComment(BaseModel):
+    track_id: int
+    rating: int
+    comment: str
+    command: str
+    comment_id: int
+class FormPostResponse(BaseModel):
+    errors: str
+    date: str
+    comment_rating_id: int

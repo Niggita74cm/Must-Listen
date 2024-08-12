@@ -1,3 +1,7 @@
+<!--КАКИЕ ДАННЫЕ О КАРТИНКЕ ПЕРЕДОВАТЬ, БЕК НЕ ПОНИМАТЬ, ПОЭТОМУ ЭТО НЕ ПРИКОНЕКЧЕНО -->
+<!--НАДО ДОБАВИТЬ ЧТОБЫ БЫЛ ВЫВОД И ОБЩИЙ РЕЙТИНГ ПОПУЛЯРНОСТИ И РЕЙТИНГ ПОПУЛЯРНОСТИ ЧТО НА САЙТЕ ФОРМИРУЕТСЯ-->
+
+<!--ВОЗМОЖНО СТОИТ ДОБАВИТЬ ПОЛЬЗОВАТЕЛЯМ ИЗМЕНЕНИЕ  СВОИХ КОММЕНТАРИЕВ -->
 <template>
     <div id="app">
       <div class="menu-row">
@@ -11,13 +15,13 @@
         </div>
         <div class="track-details">
           <div class="track-title">
-            <h2>{{ Musicinfo[0].track_name }}</h2>
+            <h2>{{ Musicinfo.track_name }}</h2>
           </div>
           <div class="track-meta">
-            <p><b>Альбом</b> {{ Musicinfo[0].album_name }}</p>
-            <p><b>Исполнитель</b> {{ Musicinfo[0].artists }}</p>
-            <p><b>Рейтинг</b> {{ Musicinfo[0].popurarity }}</p>
-            <p><b>Продолжительность</b> {{ formatDuration(Musicinfo[0].duratind_ms) }}</p>
+            <p><b>Альбом</b> {{ Musicinfo.album_name }}</p>
+            <p><b>Исполнитель</b> {{ Musicinfo.artists }}</p>
+            <p><b>Рейтинг</b> {{ Musicinfo.rating }}</p>
+            <p><b>Продолжительность</b> {{ formatDuration(Musicinfo.duratind_ms) }}</p>
             <p>
               <b>Поставить оценку</b>
               <select v-model="rating1" class="rating-select">
@@ -25,7 +29,7 @@
               </select>
               <button @click="submitRating" class="rating-button">Оценить</button>
             </p>
-            <p v-if="userRating">Ваша оценка {{ userRating }}</p>
+            <p v-if="Musicinfo.userRating">Ваша оценка {{ Musicinfo.userRating }}</p>
           </div>
         </div>
 
@@ -40,29 +44,29 @@
       </div>
       <div class="comments-about">
         <h3>Комментарии</h3>
-        <div v-for="(comment, index) in Comments" :key="index" class="comment">
+        <div v-for="(comment, index) in track_comments" :key="index" class="comment">
           
           <div class="comment-content">
             <p>
               <strong>{{ comment.user_name }}</strong> <code style="color:grey;">{{ comment.time }}</code>
               <br/>
-              {{ comment.text_connent }}
+              {{ comment.text_comment }}
             </p>
 
                    </div>
-        <div v-if="current_user === 'admin'" class="comment-actions">
+        <div v-if="this.NumberPrivileges === 'admin'" class="comment-actions">
             <button @click="removeComment(index,comment.comment_id)" class="delete-button">Удалить</button>
           </div>
 
           <button
-            v-if="comment.user_name === current_user"
+            v-if="comment.user_name === username"
             @click="removeComment(index, comment.comment_id)"
             class="delete-button"
           >
             Удалить
           </button>
 
-          <hr v-if="index !== Comments.length - 1">
+          <hr v-if="index !== track_comments.length - 1">
         </div>
       </div>
     </div>
@@ -70,7 +74,7 @@
   
   <script>
   import MenuBarAuth from './MenuBarAuth.vue';
-  
+  import axios from "axios";
   export default {
     name: 'MusicPage',
     components: {
@@ -78,62 +82,52 @@
     },
     computed: {
       musicId() {
-        return this.$route.params.id; ///ЭТО ID ТРЕКА ПО КОТОРОМУ КЛИКНУЛИ
+        return this.$route.params.track_id; ///ЭТО ID ТРЕКА ПО КОТОРОМУ КЛИКНУЛИ
       },
     },
     data() {
       return {
-        userRating: null, ///ЕСЛИ ПОСТАВЛЕНА ТО ПЕРЕДАТЬ СЮДА
+
         rating1: null,
-        current_user: 'sasha', //ЕСЛИ admin БУДЕТ КНОПКА УДАЛИТЬ
+        username: '', //ЕСЛИ admin БУДЕТ КНОПКА УДАЛИТЬ
+        NumberPrivileges: '',
         ///ДАННЫЕ О ТРЕКЕ ТОЖЕ НУЖНЫ С СЕРВЕРА
-        Musicinfo: [
-          {
-            track_id: 1,
-            track_name: 'Wolves',
-            album_name: 'The Life Of Pablo',
-            artists: 'Kanye West',
-            popurarity: 5,
-            duratind_ms: 249458,
-          },
-        ],
+        Musicinfo: {
+            track_id: this.$route.params.track_id,
+            userRating: null, ///ЕСЛИ ПОСТАВЛЕНА ТО ПЕРЕДАТЬ СЮДА
+            track_name: '',
+            album_name: '',
+            artists: '',
+            rating: 0.0,
+            popularity: 0,
+            duratind_ms: 0,
+            url_images: ''
+        },
         //КАРТИНОЧКА С СЕРВЕРА
         images: [
           { id: 1, url: 'https://avatars.yandex.net/get-music-content/41288/5c92aeb1.a.3555472-1/m1000x1000', alt: 'Image 1', link: 'https://music.yandex.ru/album/3555472' },
         ],
         //КОММЕНТАРИИ С СЕРВЕРА
-        Comments: [
-        {
+        track_comments: [
+          {
             comment_id: 1,
             user_name: 'sasha0021',
             time: "23.04.2024",
-            text_connent: '👍',
+            text_comment: '👍',
+          },
+        ],
+        FormPostRequest:{
+          track_id: 0,
+          rating: 0,
+          comment: '',
+          command: '',
+          comment_id: 0
         },
-        {
-            comment_id: 2,
-            user_name: 'user',
-            time: "03.12.2023",
-            text_connent: 'Best ❤️',
-        },
-        {
-            comment_id: 3,
-            user_name: 'star15',
-            time: "16.05.2023",
-            text_connent: 'I dont like it(((',
-        },
-        {
-            comment_id: 4,
-            user_name: 'lover_',
-            time: "18.07.2022",
-            text_connent: 'Listen every day',
-        },
-        {
-            comment_id: 5,
-            user_name: 'music_user',
-            time: "12.01.2022",
-            text_connent: 'This is my favourite track!!!😍😍😍',
-        },
-      ],
+        FormPostResponse:{
+          errors: '',
+          date: '',
+          comment_rating_id: 0
+        }
     };
   },
   methods: {
@@ -142,36 +136,116 @@
       const seconds = Math.floor((durationMs % 60000) / 1000);
       return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     },
-
-    submitRating() {
-      this.userRating = this.rating1;
-      // Здесь вы можете добавить логику для отправки рейтинга на сервер
-      console.log('Оценка:', this.userRating);
+    getTrackInfo(){
+      axios.get(`/MusicPage?track_id=${this.$route.params.track_id}`)
+          .then((res) => {
+            this.Musicinfo.track_id=res.data.track_id;
+            this.Musicinfo.track_name=res.data.track_name;
+            this.Musicinfo.album_name=res.data.album_name;
+            this.Musicinfo.artists=res.data.artists;
+            this.Musicinfo.rating=res.data.rating;
+            this.Musicinfo.popularity=res.data.popularity;
+            this.Musicinfo.duratind_ms=res.data.duratind_ms;
+            this.Musicinfo.url_images=res.data.url_images;
+            this.Musicinfo.userRating=res.data.userRating;
+            this.track_comments=res.data.track_comments;
+            this.username=res.data.username;
+            this.NumberPrivileges = res.data.NumberPrivileges;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
     },
-    removeComment(index, commentId) {
-    // Здесь вы можете добавить логику для отправки удаления комментария на сервер
-      console.log('Удален:', commentId);
-      this.Comments.splice(index, 1);
+    submitRating() {
+      this.FormPostRequest.command = 'Set Rating';
+      this.FormPostRequest.rating=this.rating1;
+      this.FormPostRequest.track_id = this.$route.params.track_id;
+      const data = JSON.stringify(this.FormPostRequest);
+      axios.post('/MusicPage', data, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then((response) => {
+        if(response.data.errors===''){
+          this.Musicinfo.userRating = this.rating1;
+          console.log('Rating:', this.Musicinfo.userRating);
+        }
+        else{
+          console.log('Errors server set rating');
+        }
+      })
+      .catch((error) => {
+        console.error('Set Rating:', error);
+      });
+
+
     },
     addComment() {
     //Здесь надо на сервак отправлять добавленный комент
       if (this.newComment.trim() !== '') {
-        const newCommentId = this.Comments.length + 1;
-        const currentTime = new Date(Date.now()); // текущее время
-        const day = currentTime.getDate();
-        const month = currentTime.getMonth() + 1; // добавляем 1, так как месяцы в JavaScript начинаются с нуля
-        const year = currentTime.getFullYear();
-        const formattedTime = `${day.toString().padStart(2, '0')}.${month.toString().padStart(2, '0')}.${year}`;
-        this.Comments.push({
-          user_name: this.current_user,
-          text_connent: this.newComment,
-          comment_id: newCommentId,
-          time: formattedTime
+        const newComment = this.newComment;
+        this.FormPostRequest.command = 'Writing Comment';
+        this.FormPostRequest.comment =this.newComment;
+        this.FormPostRequest.track_id = this.$route.params.track_id;
+        const data = JSON.stringify(this.FormPostRequest);
+        axios.post('/MusicPage', data, {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        .then((response) => {
+          if(response.data.errors===''){
+            console.log(response.data)
+            this.track_comments.push({
+              user_name: this.username,
+              text_comment: newComment,
+              comment_id: response.data.comment_rating_id,
+              time: response.data.date
+            });
+          }
+          else{
+            console.error('Error server writing comment');
+          }
+
+        })
+        .catch((error) => {
+          console.error('Writing comment:', error);
         });
-        console.log('Добавлен комент');
         this.newComment = '';
       }
     },
+
+
+
+
+    removeComment(index, commentId) {
+      this.FormPostRequest.command = 'Delete Comment';
+      this.FormPostRequest.comment_id=commentId;
+      this.FormPostRequest.track_id = this.$route.params.track_id;
+      const data = JSON.stringify(this.FormPostRequest);
+      axios.post('/MusicPage', data, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then((response) => {
+        if(response.data.errors===''){
+          // Здесь вы можете добавить логику для отправки удаления комментария на сервер
+          console.log('Удален:', commentId);
+          this.track_comments.splice(index, 1);
+        }
+        else{
+          console.log('Errors server set rating');
+        }
+      })
+      .catch((error) => {
+        console.error('Delete Comment:', error);
+      });
+    },
+  },
+  created() {
+    this.getTrackInfo();
   },
 };
 </script>

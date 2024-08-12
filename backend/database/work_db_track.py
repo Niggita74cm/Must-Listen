@@ -35,12 +35,37 @@ def create_track(db: Session, track: LoadTrack):
 
 
 def get_all_track(db: Session):
-    all_data = db.query(Track.id, Track.track_name, Track.artists, Track.album_name, Track.rating).all()
+    all_data = db.query(Track.id, Track.track_name, Track.artists, Track.album_name, Track.rating, Track.popularity).all()
     return all_data
 def get_track(db: Session, track_id: int):
     track = db.query(Track).filter(Track.id == track_id).first()
     return track
-
+def search_track_by_name(db: Session, name_track: str):
+    firstQuery = name_track+'%'
+    tracks = db.query(Track).filter(Track.track_name.like(firstQuery)).all()
+    secondQuery = "% "+name_track+'%'
+    tracks += db.query(Track).filter(Track.track_name.like(secondQuery)).all()
+    print(f"len tracks by name: {len(tracks)}")
+    return tracks
+def search_track_by_album(db: Session, album_track: str):
+    firstQuery = album_track + '%'
+    tracks = db.query(Track).filter(Track.album_name.like(firstQuery)).all()
+    secondQuery = "% " + album_track + '%'
+    tracks += db.query(Track).filter(Track.album_name.like(secondQuery)).all()
+    print(f"len tracks by album: {len(tracks)}")
+    return tracks
+def search_track_by_artists(db: Session, artists_track: str):
+    firstQuery = artists_track + '%'
+    tracks = db.query(Track).filter(Track.artists.like(firstQuery)).all()
+    secondQuery = "% " + artists_track + '%'
+    tracks += db.query(Track).filter(Track.artists.like(secondQuery)).all()
+    print(f"len tracks by artists: {len(tracks)}")
+    return tracks
+def search_track(db: Session, name_track: str, artists_track: str, albums_track: str):
+    tracks = search_track_by_name(db, name_track)
+    tracks += search_track_by_album(db, albums_track)
+    tracks += search_track_by_artists(db, artists_track)
+    return tracks
 def update_rating(db: Session, track_id: int, rating: float):
     db.execute(update(Track).where(Track.id == track_id).values(rating=rating))
     db.commit()
@@ -52,9 +77,3 @@ def update_num_rating(db: Session, track_id: int, number_rating: int):
     db.commit()
     user = db.query(Track).filter(Track.id == track_id).first()
     db.refresh(user)
-
-
-# def delete_track(db: Session, id_track: int):
-#     track = db.query(Track).filter(Track.id == id_track).all()
-#     db.delete(track)
-#     db.commit()

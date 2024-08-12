@@ -6,24 +6,19 @@ from fastapi import Response
 from backend.model.models_auth import UserCreateFormPost, UserCreate
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
-from fastapi.responses import RedirectResponse
-from starlette.status import HTTP_303_SEE_OTHER
-from backend.api.form.form_identific import UserCreateForm
-
+from backend.services.checking_input_data import Verification
 router = APIRouter()
-
-
 @router.post("/RegistrUserPage")
 async def UserRegistration(current_user: UserCreateFormPost, db: Session = Depends(get_db), response: Response = None):
     print("RegistrUserPage Post")
     print(current_user)
-    form = UserCreateForm(current_user)
-    await form.load_data()
-    if await form.is_valid(db):
+    correct_form = Verification(db=db)
+    if await correct_form.CheckAllNewData(NewLogin=current_user.username, NewPassword=current_user.password,
+                                          NewEmail=current_user.email, ConfirmPassword=current_user.confirmPassword):
         user = UserCreate(
-            login=form.login,
-            email=form.email,
-            password=form.password
+            login=current_user.username,
+            email=current_user.email,
+            password=current_user.password
         )
         try:
             print("trying login")
@@ -31,4 +26,4 @@ async def UserRegistration(current_user: UserCreateFormPost, db: Session = Depen
             response.set_cookie(key="user_id", value=str(user.id), httponly=True, samesite="lax")
         except IntegrityError:
             print("Error: create_new_user")
-    return form.errors
+    return correct_form.errors

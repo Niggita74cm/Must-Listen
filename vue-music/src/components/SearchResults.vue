@@ -1,3 +1,5 @@
+<!--НАДО ДОБАВИТЬ ЧТОБЫ БЫЛ ВЫВОД И ОБЩИЙ РЕЙТИНГ ПОПУЛЯРНОСТИ И РЕЙТИНГ ПОПУЛЯРНОСТИ ЧТО НА САЙТЕ ФОРМИРУЕТСЯ-->
+
 <template>
     <div id="app">
       <div class="menu-row">
@@ -25,7 +27,7 @@
               <td>{{ result.track_name }}</td>
               <td>{{ result.album_name }}</td>
               <td>{{ result.artists }}</td>
-              <td>{{ result.popularity }}</td>
+              <td>{{ result.rating }}</td>
             </tr>
           </tbody>
         </table>
@@ -36,7 +38,7 @@
   
   <script>
   import MenuBarAuth from './MenuBarAuth.vue';
-  
+  import axios from "axios";
   export default {
     name: 'SearchResults',
     components: {
@@ -45,69 +47,31 @@
     computed: {
       searchTerm() {
         ///this.$route.query.q ЭТО ТО ЧТО ПОЛЬЗОВАТЕЛЬ ВВЕЛ В ПОИСК 
-        return this.$route.query.q || '';
+        return this.$route.query.NameTrack || '';
       },
     },
     data() {
       return {
         ///СПИСОК С СЕРВЕРА
-        searchResults: [
-          {
-            track_id: 1,
-            track_name: 'Wolves',
-            album_name: 'The Life Of Pablo',
-            artists: 'Kanye West',
-            popularity: 5,
-          },
-          {
-            track_id: 2,
-            track_name: 'Black Skinhead',
-            album_name: 'Yeezus',
-            artists: 'Kanye West',
-            popularity: 4,
-          },
-          {
-            track_id: 3,
-            track_name: 'Серпантин',
-            album_name: 'Great Depression',
-            artists: 'Markul',
-            popularity: 3,
-          },
-          {
-            track_id: 4,
-            track_name: 'False Alarm',
-            album_name: 'Starboy',
-            artists: 'The Weeknd',
-            popularity: 4,
-          },
-          {
-            track_id: 5,
-            track_name: 'Положение',
-            album_name: 'Уроборос: Улица 36',
-            artists: 'Скриптонит',
-            popularity: 5,
-          },
-          {
-            track_id: 6,
-            track_name: 'FUK SUMN',
-            album_name: 'VULTURES 1',
-            artists: 'Kanye West',
-            popularity: 4,
-          },
-          {
-            track_id: 7,
-            track_name: 'Chlorine',
-            album_name: 'Trench',
-            artists: 'Twenty One Pilots',
-            popularity: 3.8,
-          },
-        ],
+        searchResults: [],
       };
     },
     methods: {
       goToMusicPage(result) {
-        this.$router.push({ name: 'MusicPage', params: { id: result.id } });
+        this.$router.push({ name: 'MusicPage', params: { track_id: result.track_id } });
       },
+      getFoundTracks(){
+        axios.get(`/SearchResults?NameTrack=${this.$route.query.NameTrack}`)
+          .then((res) => {
+            this.searchResults = res.data;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      },
+    },
+    created() {
+      this.getFoundTracks();
     },
   };
   </script>

@@ -30,10 +30,10 @@
             @click="goToMusicPage(result)"
             class="clickable-row"
           >
-            <td>{{ result.track_name }}</td>
-            <td>{{ result.album_name }}</td>
+            <td>{{ result.TrackName }}</td>
+            <td>{{ result.AlbumName }}</td>
             <td>{{ result.artists }}</td>
-            <td>{{ result.popularity }}</td>
+            <td>{{ result.ratingSelf }}</td>
           </tr>
         </tbody>
       </table>
@@ -57,7 +57,7 @@ export default {
       //ИЗНАЧАЛЬНО ПРИСЫЛАЕМ ОТСОРТИРОВАННОЕ ПО ПОПУЛЯРНОСТИ ТЕ ПО ОЦЕНКЕ
       sortedResults: [],
       InfoAboutTypePageTracks: {
-        TypeSorting: 'RatingServer_down',
+        TypeSorting: 'RatingServer_down',//может быть "date_up" - вначале более ранее, "date_down", "RatingServer_up", "RatingServer_down" , "RatingSelf_up", "RatingSelf_down" (по умолчанию по рейтингу сервера сортировка)
         NumberPage: 1
       }
     };
@@ -73,7 +73,7 @@ export default {
           });
     },
     goToMusicPage(result) {
-        this.$router.push({ name: 'MusicPage', params: { id: result.id } });
+        this.$router.push({ name: 'MusicPage', params: { track_id: result.track_id } });
       },
     sortByPopularity() {
       //ТАК СОРТИРОВКА ПО ПОПУЛЯРНОСТИ(ПО ОЦЕНКАМ В ОБЩЕМ)
@@ -102,7 +102,7 @@ export default {
         this.sortByPopularity();
       } else if (buttonText === 'Мои оценки') {
         this.sortByMyRatings();
-      } else if (buttonText === 'Мои комментарии') {
+      } else if (buttonText === 'По дате') {
         this.sortByData();
       }
     },

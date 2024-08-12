@@ -12,7 +12,7 @@ def get_track_rating(db: Session, user_id: int, track_id: int):
     for track in tracks:
         if track.track_id == track_id:
             return track.ratingSelf
-    return -1
+    return 0
 def create_user_track(db: Session, user_track: SaveTrack):
     print(user_track)
     create_user_track = User_track(

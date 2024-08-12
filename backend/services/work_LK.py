@@ -84,9 +84,12 @@ def GetCorrectUserTracks(db: Session, user_id: int)-> list:
         track = get_track(db, track_data.track_id)
         print(track.track_name)
         need_data = LKTrack(
+            track_id=track.id,
             TrackName=track.track_name,
             ratingSelf=track_data.ratingSelf,
             ratingService=track.rating,
+            AlbumName=track.album_name,
+            artists=track.artists,
             date=str(track_data.date),
             type=""
 

@@ -44,10 +44,7 @@ def delete_all_comments_user(db: Session, user_id: int):
         db.delete(comment)
     db.commit()
 
-# def delete_comment(db: Session, user_id: int, track_id: int, comment_text: src):
-#     all_comment = get_comments_for_user(db, user_id)
-#     for comment in all_comment:
-#         if comment.track_id == track_id and comment.comment == comment_text:
-#             db.delete(comment)
-#             db.commit()
-#             break
+def delete_comment(db: Session, comment_id: int):
+    deleted_comment = db.query(Comment).filter(Comment.id == comment_id).first()
+    db.delete(deleted_comment)
+    db.commit()

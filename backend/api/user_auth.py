@@ -8,7 +8,6 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import true
 from backend.model.models_auth import UserLogin,  CodeAuth2, UserLoginResponse, CodeAuth2Response
-from backend.api.form.form_auth import LoginForm
 import smtplib
 from backend.services.security_util.generate_pswd import generate_one_time_psswd
 from starlette.responses import Response
@@ -19,34 +18,31 @@ router = APIRouter()
 @router.post("/", response_model=UserLoginResponse)
 async def login(current_user: UserLogin, db: Session = Depends(get_db), response: Response = None):
     print("Post data authentication")
-    form = LoginForm(current_user)
-    await form.load_data()
-    if await form.is_valid():
-        try:
-            result = UserLoginResponse(
-                second_factor=False,
-                access_user=False
-            )
-            Get_user = UserLogin(
-                login=form.login,
-                password=form.password
-            )
-            user: User = get_user(Get_user, db=db)
-            if user is None:
-                print("User does not exist or wrong password")
+    try:
+        result = UserLoginResponse(
+            second_factor=False,
+            access_user=False
+        )
+        Get_user = UserLogin(
+            login=current_user.login,
+            password=current_user.password
+        )
+        user: User = get_user(Get_user, db=db)
+        if user is None:
+            print("User does not exist or wrong password")
+        else:
+            print("Logged in successfully")
+            result.access_user = True
+            if user.auth2 == true():
+                print("authentication two factor")
+                result.second_factor = True
             else:
-                print("Logged in successfully")
-                result.access_user = True
-                if user.auth2 == true():
-                    print("authentication two factor")
-                    result.second_factor = True
-                else:
-                    response.set_cookie(key="user_id", value=str(user.id), httponly=True, samesite="lax")
-                    print("no authentication two factor")
-            print(result)
-            return result
-        except HTTPException:
-            return {"message": "Invalid credentials"}
+                response.set_cookie(key="user_id", value=str(user.id), httponly=True, samesite="lax")
+                print("no authentication two factor")
+        print(result)
+        return result
+    except HTTPException:
+        return {"message": "Invalid credentials"}
 
 
 @router.get("/2factor")
