@@ -47,6 +47,7 @@ class SelectedTrack(BaseModel):
     url_images: str
     username: str
     track_comments: List[TrackComments]
+    NumberPrivileges: str
 
 class FormPostRatingComment(BaseModel):
     track_id: int

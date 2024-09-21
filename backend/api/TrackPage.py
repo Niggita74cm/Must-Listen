@@ -71,28 +71,43 @@ async def track_page(request: Request, track_id: int, db: Session = Depends(get_
             time=str(comment.date),
             text_comment=comment.comment
         )
-        print(f'send_comment: {send_comment}')
         send_comment.append(CommentForm)
+        print(f'send_comment: {send_comment}')
     NumberPrivileges = ''
     if check_on_admin(db=db, user_id=user_id):
-        NumberPrivileges = 'admin'
+        print("admin")
+        return SelectedTrack(
+            track_id=track_id,
+            track_name=track.track_name,
+            album_name=track.album_name,
+            artists=track.artists,
+            rating=track.rating,
+            popularity=track.popularity,
+            duratind_ms=track.duration_ms,
+            url_images=track.picture_track,
+            track_comments=send_comment,
+            userRating=user_track_rating,
+            username=userInfo.login,
+            NumberPrivileges='admin'
+        )
     else:
-        NumberPrivileges = 'user'
-    print(f'NumberPrivileges: {NumberPrivileges}')
-    return SelectedTrack(
-        track_id=track_id,
-        track_name=track.track_name,
-        album_name=track.album_name,
-        artists=track.artists,
-        rating=track.rating,
-        popularity=track.popularity,
-        duratind_ms=track.duration_ms,
-        url_images=track.picture_track,
-        track_comments=send_comment,
-        userRating=user_track_rating,
-        username=userInfo.login,
-        NumberPrivileges=NumberPrivileges
-    )
+        print("user")
+        return SelectedTrack(
+            track_id=track_id,
+            track_name=track.track_name,
+            album_name=track.album_name,
+            artists=track.artists,
+            rating=track.rating,
+            popularity=track.popularity,
+            duratind_ms=track.duration_ms,
+            url_images=track.picture_track,
+            track_comments=send_comment,
+            userRating=user_track_rating,
+            username=userInfo.login,
+            NumberPrivileges='user'
+        )
+
+
 
 @router.post("/MusicPage", response_model=FormPostResponse)
 async def SetRatingAndWritingComment(request: Request, rating_comment: FormPostRatingComment, db: Session = Depends(get_db)):
