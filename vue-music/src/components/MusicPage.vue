@@ -79,6 +79,8 @@
     },
     computed: {
       musicId() {
+        const trackId=this.$route.params.track_id;
+        sessionStorage.setItem('track_id', trackId);
         return this.$route.params.track_id; ///ЭТО ID ТРЕКА ПО КОТОРОМУ КЛИКНУЛИ
       },
     },
@@ -90,7 +92,7 @@
         NumberPrivileges: '',
         ///ДАННЫЕ О ТРЕКЕ ТОЖЕ НУЖНЫ С СЕРВЕРА
         Musicinfo: {
-            track_id: this.$route.params.track_id,
+            track_id: null,
             userRating: null, ///ЕСЛИ ПОСТАВЛЕНА ТО ПЕРЕДАТЬ СЮДА
             track_name: '',
             album_name: '',
@@ -133,8 +135,12 @@
       const seconds = Math.floor((durationMs % 60000) / 1000);
       return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     },
-    getTrackInfo(){
-      axios.get(`/MusicPage?track_id=${this.$route.params.track_id}`)
+getTrackInfo(){
+      if (this.$route.params.track_id !== undefined){
+        sessionStorage.setItem('track_id', this.$route.params.track_id);
+      }
+      const trackId = sessionStorage.getItem('track_id'); // берем track_id из маршрута
+      axios.get(`/MusicPage`, { params: { track_id: trackId } }) // используем правильный синтаксис
           .then((res) => {
             this.Musicinfo.track_id=res.data.track_id;
             this.Musicinfo.track_name=res.data.track_name;
@@ -156,7 +162,7 @@
     submitRating() {
       this.FormPostRequest.command = 'Set Rating';
       this.FormPostRequest.rating=this.rating1;
-      this.FormPostRequest.track_id = this.$route.params.track_id;
+      this.FormPostRequest.track_id = sessionStorage.getItem('track_id');
       const data = JSON.stringify(this.FormPostRequest);
       axios.post('/MusicPage', data, {
         headers: {
@@ -242,8 +248,11 @@
     },
   },
   created() {
+
     this.getTrackInfo();
+
   },
+
 };
 </script>
 

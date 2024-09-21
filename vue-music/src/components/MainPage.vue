@@ -11,7 +11,7 @@
       <span class="sorting-label">Сортировка:</span>
       <button class="sorting-button active" @click="toggleSortButton($event.target)">Популярное</button>
       <button class="sorting-button" @click="toggleSortButton($event.target)">Мои оценки</button>
-      <button class="sorting-button" @click="toggleSortButton($event.target)">Мои комментарии</button>
+      <button class="sorting-button" @click="toggleSortButton($event.target)">По дате</button>
     </div>
     <div v-if="sortedResults.length" class="table-container">
       <table class="centered-table">
