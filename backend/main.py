@@ -4,7 +4,7 @@ from backend.database.connect import engine
 from backend.database.utils import check_db_connected
 from backend.database.utils import check_db_disconnected
 from fastapi import FastAPI
-from backend.base_auth import api_router as web_app_router
+from backend.api_router import api_router as web_app_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
