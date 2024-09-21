@@ -53,13 +53,10 @@
               {{ comment.text_comment }}
             </p>
 
-                   </div>
-        <div v-if="this.NumberPrivileges === 'admin'" class="comment-actions">
-            <button @click="removeComment(index,comment.comment_id)" class="delete-button">Удалить</button>
           </div>
 
-          <button
-            v-if="comment.user_name === username"
+        <button
+            v-if="comment.user_name === username || NumberPrivileges === 'admin'"
             @click="removeComment(index, comment.comment_id)"
             class="delete-button"
           >
@@ -71,7 +68,7 @@
       </div>
     </div>
   </template>
-  
+
   <script>
   import MenuBarAuth from './MenuBarAuth.vue';
   import axios from "axios";
@@ -360,4 +357,3 @@ button:hover {
   background-color: #252625;
 }
 </style>
-  

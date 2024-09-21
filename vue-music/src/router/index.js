@@ -41,7 +41,7 @@ export default new Router({
     component: SearchResults,
   },
   {
-    path: '/music/:id',
+    path: '/MusicPage',
     name: 'MusicPage',
     component: MusicPage,
   },
