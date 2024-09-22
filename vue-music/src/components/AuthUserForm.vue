@@ -60,7 +60,7 @@
       methods: {
         IsLogin() {
           const data = JSON.stringify(this.formLogin);
-          axios.post('/api', data, {
+          axios.post('/api/', data, {
             headers: {
               'Content-Type': 'application/json',
             }

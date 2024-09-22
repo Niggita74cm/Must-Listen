@@ -15,7 +15,7 @@ from email.mime.text import MIMEText
 
 
 router = APIRouter()
-@router.post("/api", response_model=UserLoginResponse)
+@router.post("/api/", response_model=UserLoginResponse)
 async def login(current_user: UserLogin, db: Session = Depends(get_db), response: Response = None):
     print("Post data authentication")
     try:
