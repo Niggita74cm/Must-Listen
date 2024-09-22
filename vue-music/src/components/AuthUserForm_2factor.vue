@@ -44,7 +44,7 @@
       },
       methods: {
         SendOneTimePassword(){
-          axios.get('/2factor')
+          axios.get('/api/2factor')
           .then((res) => {
             console.log("One-time password has been sent")
             console.log(res)
@@ -56,7 +56,7 @@
         IsLogin() {
 
           const DataFromPost = JSON.stringify(this.formLogin);
-          axios.post('/2factor', DataFromPost, {
+          axios.post('/api/2factor', DataFromPost, {
             headers: {
               'Content-Type': 'application/json',
             }

@@ -140,7 +140,7 @@ getTrackInfo(){
         sessionStorage.setItem('track_id', this.$route.params.track_id);
       }
       const trackId = sessionStorage.getItem('track_id'); // берем track_id из маршрута
-      axios.get(`/MusicPage`, { params: { track_id: trackId } }) // используем правильный синтаксис
+      axios.get(`/api/MusicPage`, { params: { track_id: trackId } }) // используем правильный синтаксис
           .then((res) => {
             this.Musicinfo.track_id=res.data.track_id;
             this.Musicinfo.track_name=res.data.track_name;
@@ -164,7 +164,7 @@ getTrackInfo(){
       this.FormPostRequest.rating=this.rating1;
       this.FormPostRequest.track_id = sessionStorage.getItem('track_id');
       const data = JSON.stringify(this.FormPostRequest);
-      axios.post('/MusicPage', data, {
+      axios.post('/api/MusicPage', data, {
         headers: {
           'Content-Type': 'application/json',
         }
@@ -192,7 +192,7 @@ getTrackInfo(){
         this.FormPostRequest.comment =this.newComment;
         this.FormPostRequest.track_id = this.$route.params.track_id;
         const data = JSON.stringify(this.FormPostRequest);
-        axios.post('/MusicPage', data, {
+        axios.post('/api/MusicPage', data, {
           headers: {
             'Content-Type': 'application/json',
           }
@@ -227,7 +227,7 @@ getTrackInfo(){
       this.FormPostRequest.comment_id=commentId;
       this.FormPostRequest.track_id = this.$route.params.track_id;
       const data = JSON.stringify(this.FormPostRequest);
-      axios.post('/MusicPage', data, {
+      axios.post('/api/MusicPage', data, {
         headers: {
           'Content-Type': 'application/json',
         }

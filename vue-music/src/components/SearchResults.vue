@@ -61,7 +61,7 @@
         this.$router.push({ name: 'MusicPage', params: { track_id: result.track_id } });
       },
       getFoundTracks(){
-        axios.get(`/SearchResults?NameTrack=${this.$route.query.NameTrack}`)
+        axios.get(`/api/SearchResults?NameTrack=${this.$route.query.NameTrack}`)
           .then((res) => {
             this.searchResults = res.data;
           })

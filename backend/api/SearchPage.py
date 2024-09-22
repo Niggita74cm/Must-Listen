@@ -10,7 +10,7 @@ from backend.model.models_action import SearchResults
 router = APIRouter()
 
 #даже не знаю как сюда передовать, это может на фронте скорее всего делатся
-@router.get("/SearchResults", response_model=List[SearchResults])
+@router.get("/api/SearchResults", response_model=List[SearchResults])
 def get_search_results(NameTrack: str,   db: Session = Depends(get_db)):
     print("get_search_results")
     print(f"NameTrack: {NameTrack}")

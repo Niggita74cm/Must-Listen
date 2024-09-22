@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     getUserTracks(){
-      axios.get(`/MainPage?NumberPage=${this.InfoAboutTypePageTracks.NumberPage}&TypeSorting=${this.InfoAboutTypePageTracks.TypeSorting}`)
+      axios.get(`/api/MainPage?NumberPage=${this.InfoAboutTypePageTracks.NumberPage}&TypeSorting=${this.InfoAboutTypePageTracks.TypeSorting}`)
           .then((res) => {
             this.sortedResults = res.data;
           })

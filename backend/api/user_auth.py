@@ -15,7 +15,7 @@ from email.mime.text import MIMEText
 
 
 router = APIRouter()
-@router.post("/", response_model=UserLoginResponse)
+@router.post("/api", response_model=UserLoginResponse)
 async def login(current_user: UserLogin, db: Session = Depends(get_db), response: Response = None):
     print("Post data authentication")
     try:
@@ -45,7 +45,7 @@ async def login(current_user: UserLogin, db: Session = Depends(get_db), response
         return {"message": "Invalid credentials"}
 
 
-@router.get("/2factor")
+@router.get("/api/2factor")
 async def auth2(request: Request, db: Session = Depends(get_db), response: Response = None):
     print("Get Auth2")
     try:
@@ -76,7 +76,7 @@ async def auth2(request: Request, db: Session = Depends(get_db), response: Respo
     return "One-time password sent successfully"
 
 
-@router.post("/2factor", response_model=CodeAuth2Response)
+@router.post("/api/2factor", response_model=CodeAuth2Response)
 async def auth2(code: CodeAuth2, request: Request, db: Session = Depends(get_db), response: Response = None):
     print("Post Auth2")
     user_id = int(request.cookies.get("user_id"))

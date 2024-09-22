@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from backend.services.checking_input_data import Verification
 router = APIRouter()
-@router.post("/RegistrUserPage")
+@router.post("/api/RegistrUserPage")
 async def UserRegistration(current_user: UserCreateFormPost, db: Session = Depends(get_db), response: Response = None):
     print("RegistrUserPage Post")
     print(current_user)

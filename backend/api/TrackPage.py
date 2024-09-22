@@ -45,7 +45,7 @@ def update_comment_track(comment: CommentTrack, db: Session):
     create_comment(db, comment)
 
 #так не понятно как получать id трека(в теории через url параметр)
-@router.get("/MusicPage", response_model=SelectedTrack)
+@router.get("/api/MusicPage", response_model=SelectedTrack)
 async def track_page(request: Request, track_id: int, db: Session = Depends(get_db)):
     print("Getting track page")
     user_id = int(request.cookies.get("user_id"))
@@ -109,7 +109,7 @@ async def track_page(request: Request, track_id: int, db: Session = Depends(get_
 
 
 
-@router.post("/MusicPage", response_model=FormPostResponse)
+@router.post("/api/MusicPage", response_model=FormPostResponse)
 async def SetRatingAndWritingComment(request: Request, rating_comment: FormPostRatingComment, db: Session = Depends(get_db)):
     current_datetime = datetime.now()
     timestamp_str = current_datetime.strftime('%Y-%m-%d %H:%M:%S')

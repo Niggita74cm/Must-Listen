@@ -131,7 +131,7 @@ export default {
   },
   methods: {
     getUserInfo(){
-      axios.get('/SettingsF')
+      axios.get('/api/SettingsF')
           .then((res) => {
             this.UserInfo.email = res.data.email;
             this.UserInfo.username = res.data.username;
@@ -148,7 +148,7 @@ export default {
       this.ConfigurationOptions.NewData = NewData
       this.ConfigurationOptions.OldData = OldData
       const DataFromPost = JSON.stringify(this.ConfigurationOptions);
-          axios.post('/SettingsF', DataFromPost, {
+          axios.post('/api/SettingsF', DataFromPost, {
             headers: {
               'Content-Type': 'application/json',
             }

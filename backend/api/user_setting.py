@@ -14,7 +14,7 @@ router = APIRouter()
 #включение двуфакторной аутентификации
 #Изменение имени/фамилии
 
-@router.get("/SettingsF", response_model=UserInfo)
+@router.get("/api/SettingsF", response_model=UserInfo)
 async def menu_setting(request: Request, db: Session = Depends(get_db)):
     print("Get menu_setting")
     user_id = int(request.cookies.get("user_id"))
@@ -39,7 +39,7 @@ async def menu_setting(request: Request, db: Session = Depends(get_db)):
 
 
 
-@router.post("/SettingsF", response_model=SettingsPostResponse)
+@router.post("/api/SettingsF", response_model=SettingsPostResponse)
 async def main_setting(request: Request, user_action: ConfigurationOptions, db: Session = Depends(get_db)):
     print("Post main_setting")
     user_id = int(request.cookies.get("user_id"))

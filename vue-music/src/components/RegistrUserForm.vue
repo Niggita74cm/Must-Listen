@@ -78,7 +78,7 @@
         },
         RegisterUser() {
           const data = JSON.stringify(this.formRegisr);
-          axios.post('/RegistrUserPage', data, {
+          axios.post('/api/RegistrUserPage', data, {
             headers: {
               'Content-Type': 'application/json',
             }

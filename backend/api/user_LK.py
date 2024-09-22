@@ -9,7 +9,7 @@ router = APIRouter()
 
 
 #так это страница личного кабинета здесь отсылка данных о треках пользователя идет, ну и отрисовка самого фронта
-@router.get("/MainPage", response_model=List[LKTrack])
+@router.get("/api/MainPage", response_model=List[LKTrack])
 async def main_LK(request: Request, NumberPage: int, TypeSorting: str, db: Session = Depends(get_db)):
     print("Get main_LK")
     user_id = request.cookies.get("user_id")
