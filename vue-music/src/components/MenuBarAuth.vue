@@ -33,7 +33,7 @@ export default {
   methods: {
     handleSearch() {
       // Обработка логики поиска здесь
-      
+      this.$router.push({ name: 'SearchResults', query: { NameTrack: this.searchTerm } });
     },
   },
 };
