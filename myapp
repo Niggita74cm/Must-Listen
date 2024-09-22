@@ -1,0 +1,25 @@
+server {
+    listen 80;
+    server_name 87.228.24.102;  # Укажите IP-адрес вашего сервера
+
+    # Проксирование запросов на фронтенд (порт 8080)
+    location / {
+        proxy_pass http://127.0.0.1:8080;   # Фронтенд работает на порте 8080
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Проксирование запросов на бэкенд (порт 8000)
+    location /api/ {
+        proxy_pass http://127.0.0.1:8000;   # Бэкенд работает на порте 8000
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Дополнительная конфигурация для обратного прокси
+    client_max_body_size 100M;  # Ограничение на размер тела запроса (по желанию)
+}
