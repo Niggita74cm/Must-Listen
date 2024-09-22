@@ -15,7 +15,7 @@
         </b-navbar-nav>
         <form class="form-inline d-flex my-2 my-lg-0" @submit.prevent="handleSearch">
           <input class="form-control mr-sm-2" type="search" placeholder="Найти..." aria-label="Search" v-model="searchTerm">
-          <router-link :to="{ name: 'SearchResults', query: { NameTrack: searchTerm } }" class="btn btn-outline-light my-2 my-sm-0 ml-auto" type="submit">Поиск</router-link>
+          <button type="submit" class="btn btn-outline-light my-2 my-sm-0 ml-auto">Поиск</button>
         </form>
       </b-navbar>
     </header>
@@ -31,10 +31,9 @@ export default {
     };
   },
   methods: {
-    handleSearch() {
-      // Обработка логики поиска здесь
-      this.$router.push({ name: 'SearchResults', query: { NameTrack: this.searchTerm } });
-    },
+  handleSearch() {
+    this.$router.push({ name: 'SearchResults', query: { NameTrack: this.searchTerm } });
+  },
   },
 };
 </script>
