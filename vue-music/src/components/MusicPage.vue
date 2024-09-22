@@ -86,7 +86,7 @@
     },
     data() {
       return {
-
+        track_id: 0,
         rating1: null,
         username: '', //ЕСЛИ admin БУДЕТ КНОПКА УДАЛИТЬ
         NumberPrivileges: '',
@@ -139,6 +139,7 @@ getTrackInfo(){
       if (this.$route.params.track_id !== undefined){
         sessionStorage.setItem('track_id', this.$route.params.track_id);
       }
+      this.track_id = this.$route.params.track_id;
       const trackId = sessionStorage.getItem('track_id'); // берем track_id из маршрута
       axios.get(`/api/MusicPage`, { params: { track_id: trackId } }) // используем правильный синтаксис
           .then((res) => {
@@ -190,7 +191,7 @@ getTrackInfo(){
         const newComment = this.newComment;
         this.FormPostRequest.command = 'Writing Comment';
         this.FormPostRequest.comment =this.newComment;
-        this.FormPostRequest.track_id = this.$route.params.track_id;
+        this.FormPostRequest.track_id = sessionStorage.getItem('track_id');
         const data = JSON.stringify(this.FormPostRequest);
         axios.post('/api/MusicPage', data, {
           headers: {
@@ -225,7 +226,7 @@ getTrackInfo(){
     removeComment(index, commentId) {
       this.FormPostRequest.command = 'Delete Comment';
       this.FormPostRequest.comment_id=commentId;
-      this.FormPostRequest.track_id = this.$route.params.track_id;
+      this.FormPostRequest.track_id = sessionStorage.getItem('track_id');
       const data = JSON.stringify(this.FormPostRequest);
       axios.post('/api/MusicPage', data, {
         headers: {
