@@ -73,6 +73,11 @@
     created() {
       this.getFoundTracks();
     },
+    watch: {
+    '$route'() {
+      this.getFoundTracks(); // Загружаем результаты при изменении маршрута
+    }
+  },
   };
   </script>
   

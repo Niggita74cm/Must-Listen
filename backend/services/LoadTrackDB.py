@@ -20,10 +20,13 @@ def LoadTrackDB(name_database: str, db: Session):
             continue
         if row["acousticness"] is np.nan or row["instrumentalness"] is np.nan or row["liveness"] is np.nan:
             continue
+        track_name = row["track_name"].lower()
+        artists = row["artists"].lower()
+        album_name = row["album_name"].lower()
         track = LoadTrack(
-            track_name=row["track_name"],
-            artists=row["artists"],
-            album_name=row["album_name"],
+            track_name=track_name,
+            artists=artists,
+            album_name=album_name,
             popularity=row["popularity"],
             duration_ms=row["duration_ms"],
             explicit=row["explicit"],

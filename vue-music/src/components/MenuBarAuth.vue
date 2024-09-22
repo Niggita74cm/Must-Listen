@@ -13,9 +13,10 @@
             </router-link>
           </b-nav-item>
         </b-navbar-nav>
-        <form class="form-inline d-flex my-2 my-lg-0" @submit.prevent="handleSearch">
+
+        <form class="form-inline d-flex my-2 my-lg-0" @submit.prevent="">
           <input class="form-control mr-sm-2" type="search" placeholder="Найти..." aria-label="Search" v-model="searchTerm">
-          <button type="submit" class="btn btn-outline-light my-2 my-sm-0 ml-auto">Поиск</button>
+          <router-link :to="{ name: 'SearchResults', query: { NameTrack: searchTerm } }" class="btn btn-outline-light my-2 my-sm-0 ml-auto">Поиск</router-link>
         </form>
       </b-navbar>
     </header>
@@ -24,18 +25,12 @@
 
 <script>
 export default {
-  name: 'MenuSidebar',
   data() {
     return {
-      searchTerm: '',
+      searchTerm: ''
     };
-  },
-  methods: {
-  handleSearch() {
-    this.$router.push({ name: 'SearchResults', query: { NameTrack: this.searchTerm } });
-  },
-  },
-};
+  }
+}
 </script>
 
 <style scoped>

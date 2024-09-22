@@ -14,6 +14,7 @@ router = APIRouter()
 def get_search_results(NameTrack: str,   db: Session = Depends(get_db)):
     print("get_search_results")
     print(f"NameTrack: {NameTrack}")
+    NameTrack=NameTrack.lower()
     search_all_track = search_track(db=db, name_track=NameTrack, albums_track=NameTrack, artists_track=NameTrack)
     found_tracks = search_tracks(NameTrack, search_all_track)
     print(found_tracks)
