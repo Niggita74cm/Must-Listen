@@ -82,7 +82,7 @@ def GetCorrectUserTracks(db: Session, user_id: int)-> list:
     ShowTrackUser = []
     for track_data in user_tracks:
         track = get_track(db, track_data.track_id)
-        print(track.track_name)
+        # print(track.track_name)
         need_data = LKTrack(
             track_id=track.id,
             TrackName=track.track_name,

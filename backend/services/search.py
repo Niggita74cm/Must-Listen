@@ -11,7 +11,6 @@ def search_tracks(searched_str:str, search_all_track):
     print("search_tracks")
     found_tracks = []
     for track in search_all_track:
-        print(f'track: {track}')
         founded_track = SearchResults(
             track_id=track.id,
             track_name=track.track_name,
@@ -31,6 +30,7 @@ def search_tracks(searched_str:str, search_all_track):
         if result_3[0] == True:
             found_tracks.append((founded_track, result_3[1]))
     sorted_results = sorted(found_tracks, key=lambda x: x[1], reverse=True)
+    sorted_results = sorted_results[:100]
     return [x[0] for x in sorted_results]
 
 def SortSimilarity():
