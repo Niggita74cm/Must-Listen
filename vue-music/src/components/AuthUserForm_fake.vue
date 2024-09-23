@@ -67,10 +67,10 @@
           })
           .then((response) => {
             if(response.data.access_user===true){
-              window.location.href = 'http://87.228.24.102/';
+              this.$router.push('/');
             }
             else {
-              window.location.href = 'http://87.228.24.102/';
+              this.$router.push('/');
             }
           })
           .catch((error) => {
