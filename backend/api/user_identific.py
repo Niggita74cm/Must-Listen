@@ -11,7 +11,7 @@ router = APIRouter()
 @router.post("/api/RegistrUserPage")
 async def UserRegistration(current_user: UserCreateFormPost, db: Session = Depends(get_db), response: Response = None):
     print("RegistrUserPage Post")
-    print(current_user)
+    # print(current_user)
     correct_form = Verification(db=db)
     if await correct_form.CheckAllNewData(NewLogin=current_user.username, NewPassword=current_user.password,
                                           NewEmail=current_user.email, ConfirmPassword=current_user.confirmPassword):
@@ -24,6 +24,7 @@ async def UserRegistration(current_user: UserCreateFormPost, db: Session = Depen
             print("trying login")
             user = create_new_user(user_Create=user, db=db)# добавление в bd
             response.set_cookie(key="user_id", value=str(user.id), httponly=True, samesite="lax")
+            response.headers["X-Frame-Options"] = "DENY"
         except IntegrityError:
             print("Error: create_new_user")
     return correct_form.errors

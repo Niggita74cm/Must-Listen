@@ -6,6 +6,7 @@ from backend.model.models_user import UserInfo, ConfigurationOptions, SettingsPo
 from backend.database.work_user_db import get_user_id
 from backend.services.check_admin_user import check_on_admin
 from backend.services.realization_settings import RealizationSettings, RealizationAdminSettings
+from starlette.responses import Response
 router = APIRouter()
 
 #удаление себя
@@ -15,10 +16,11 @@ router = APIRouter()
 #Изменение имени/фамилии
 
 @router.get("/api/SettingsF", response_model=UserInfo)
-async def menu_setting(request: Request, db: Session = Depends(get_db)):
+async def menu_setting(request: Request, db: Session = Depends(get_db), response: Response = None):
     print("Get menu_setting")
     user_id = int(request.cookies.get("user_id"))
-    print(f"user_id: {user_id}")
+    # print(f"user_id: {user_id}")
+    response.headers["X-Frame-Options"] = "DENY"
     user = get_user_id(db=db, user_id=user_id)
     if check_on_admin(db=db, user_id=user_id):
         print("admin user")
@@ -40,16 +42,16 @@ async def menu_setting(request: Request, db: Session = Depends(get_db)):
 
 
 @router.post("/api/SettingsF", response_model=SettingsPostResponse)
-async def main_setting(request: Request, user_action: ConfigurationOptions, db: Session = Depends(get_db)):
-    print("Post main_setting")
+async def main_setting(request: Request, user_action: ConfigurationOptions, db: Session = Depends(get_db), response: Response = None):
+    # print("Post main_setting")
     user_id = int(request.cookies.get("user_id"))
-    print(f"user_id: {user_id}")
-
+    # print(f"user_id: {user_id}")
+    response.headers["X-Frame-Options"] = "DENY"
     realization_settings = RealizationSettings(db=db, user_id=user_id)
     if user_action.SettingsCommand == 'UpdateUsername':
         print("update login")
         res = realization_settings.UpdateUsername(NewUsername=user_action.NewData)
-        print(f"res: {res}")
+        # print(f"res: {res}")
         return res
     if user_action.SettingsCommand == 'UpdateEmail':
         print("update email")
@@ -76,5 +78,3 @@ async def main_setting(request: Request, user_action: ConfigurationOptions, db: 
         if user_action.SettingsCommand == 'AddTracks':
             print("add tracks")
             return realization_admin_settings.AddTracks(NameDatabaseTracks=user_action.NewData)
-        if user_action.SettingsCommand == 'DeleteComments':
-            ...

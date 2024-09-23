@@ -19,6 +19,7 @@ router = APIRouter()
 async def login(current_user: UserLogin, db: Session = Depends(get_db), response: Response = None):
     print("Post data authentication")
     try:
+        response.headers["X-Frame-Options"] = "DENY"
         result = UserLoginResponse(
             second_factor=False,
             access_user=False
@@ -39,7 +40,8 @@ async def login(current_user: UserLogin, db: Session = Depends(get_db), response
             else:
                 response.set_cookie(key="user_id", value=str(user.id), httponly=True, samesite="lax")
                 print("no authentication two factor")
-        print(result)
+
+        #print(result)
         return result
     except HTTPException:
         return {"message": "Invalid credentials"}
@@ -49,7 +51,7 @@ async def login(current_user: UserLogin, db: Session = Depends(get_db), response
 async def auth2(request: Request, db: Session = Depends(get_db), response: Response = None):
     print("Get Auth2")
     try:
-
+        response.headers["X-Frame-Options"] = "DENY"
         smtpObj = smtplib.SMTP('smtp.gmail.com', 587)
         smtpObj.starttls()
         smtpObj.login('vamp.be.live@gmail.com', 'pami ieuq ywqu vxgj')
@@ -57,20 +59,20 @@ async def auth2(request: Request, db: Session = Depends(get_db), response: Respo
             code=generate_one_time_psswd(6)
         )
         user_id = int(request.cookies.get("user_id"))
-        print(f'user_id: {user_id}')
+        # print(f'user_id: {user_id}')
         user = get_user_id(user_id, db)
         email_user = user.email
-        print(f'email_user: {email_user}')
+        # print(f'email_user: {email_user}')
 
         body_msg = f'Code password for Must Music: {one_time_password.code}'
-        print(body_msg)
+        # print(body_msg)
         msg = MIMEText(body_msg)
         msg['Subject'] = "Must Music"
         msg['From'] = 'vamp.be.live@gmail.com'
         msg['To'] = email_user
         smtpObj.send_message(msg=msg)
         response.set_cookie(key="code", value=one_time_password.code,  secure=True, httponly=True, samesite="lax")
-        print(f'one_time_password.code: {one_time_password.code}')
+        # print(f'one_time_password.code: {one_time_password.code}')
     except HTTPException:
         return "Invalid credentials"
     return "One-time password sent successfully"
@@ -79,6 +81,7 @@ async def auth2(request: Request, db: Session = Depends(get_db), response: Respo
 @router.post("/api/2factor", response_model=CodeAuth2Response)
 async def auth2(code: CodeAuth2, request: Request, db: Session = Depends(get_db), response: Response = None):
     print("Post Auth2")
+    response.headers["X-Frame-Options"] = "DENY"
     user_id = int(request.cookies.get("user_id"))
     code_get = request.cookies.get("code")
     user = get_user_id(user_id, db)
@@ -94,4 +97,5 @@ async def auth2(code: CodeAuth2, request: Request, db: Session = Depends(get_db)
     accessAuth2 = CodeAuth2Response(
         isLoginSuccessful=access
     )
+
     return accessAuth2

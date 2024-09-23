@@ -7,17 +7,18 @@ from sqlalchemy.orm import Session
 from backend.database.work_db_track import get_all_track, search_track
 from backend.services.search import search_tracks
 from backend.model.models_action import SearchResults
+from starlette.responses import Response
 router = APIRouter()
 
-#даже не знаю как сюда передовать, это может на фронте скорее всего делатся
 @router.get("/api/SearchResults", response_model=List[SearchResults])
-def get_search_results(NameTrack: str,   db: Session = Depends(get_db)):
+def get_search_results(NameTrack: str,   db: Session = Depends(get_db), response: Response = None):
     print("get_search_results")
-    print(f"NameTrack: {NameTrack}")
+    # print(f"NameTrack: {NameTrack}")
+    response.headers["X-Frame-Options"] = "DENY"
     NameTrack=NameTrack.lower()
     search_all_track = search_track(db=db, name_track=NameTrack, albums_track=NameTrack, artists_track=NameTrack)
     found_tracks = search_tracks(NameTrack, search_all_track)
-    print(found_tracks)
+    # print(found_tracks)
     return found_tracks
 
 

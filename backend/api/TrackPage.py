@@ -9,6 +9,7 @@ from backend.database.work_db_comment import create_comment, update_comment, get
 from backend.database.work_db_user_track import create_user_track, update_user_track,get_track_rating
 from backend.database.work_user_db import get_user_id
 from backend.model.models_action import SelectedTrack, TrackComments, FormPostRatingComment, FormPostResponse
+from starlette.responses import Response
 router = APIRouter()
 from backend.services.check_admin_user import check_on_admin
 
@@ -46,25 +47,26 @@ def update_comment_track(comment: CommentTrack, db: Session):
 
 #так не понятно как получать id трека(в теории через url параметр)
 @router.get("/api/MusicPage", response_model=SelectedTrack)
-async def track_page(request: Request, track_id: int, db: Session = Depends(get_db)):
+async def track_page(request: Request, track_id: int, db: Session = Depends(get_db), response: Response = None):
     print("Getting track page")
+    response.headers["X-Frame-Options"] = "DENY"
     user_id = int(request.cookies.get("user_id"))
     userInfo = get_user_id(db=db, user_id=user_id)
     track = get_track(db, track_id)
-    print(f'track_id: {track_id}')
-    print(f'user_id: {user_id}')
+    # print(f'track_id: {track_id}')
+    # print(f'user_id: {user_id}')
     user_track_rating = get_track_rating(db=db, track_id=track_id, user_id=user_id)
-    print(f'user_track_rating: {user_track_rating}')
+    # print(f'user_track_rating: {user_track_rating}')
     comments_track = get_all_comments(db, track_id)
-    print(f'comments_track: {comments_track}')
+    # print(f'comments_track: {comments_track}')
     send_comment = []
     for comment in comments_track:
-        print(f'comment.user_id: {comment.user_id}')
+        # print(f'comment.user_id: {comment.user_id}')
         users = get_user_id(user_id=comment.user_id, db=db)
-        print(f'users.login: {users.login}')
-        print(f'comment_id: {comment.id}')
-        print(f'time: {str(comment.date)}')
-        print(f'text_comment: {comment.comment}')
+        # print(f'users.login: {users.login}')
+        # print(f'comment_id: {comment.id}')
+        # print(f'time: {str(comment.date)}')
+        # print(f'text_comment: {comment.comment}')
         CommentForm = TrackComments(
             comment_id=comment.id,
             user_name=users.login,
@@ -72,8 +74,7 @@ async def track_page(request: Request, track_id: int, db: Session = Depends(get_
             text_comment=comment.comment
         )
         send_comment.append(CommentForm)
-        print(f'send_comment: {send_comment}')
-    NumberPrivileges = ''
+        # print(f'send_comment: {send_comment}')
     if check_on_admin(db=db, user_id=user_id):
         print("admin")
         return SelectedTrack(
@@ -110,15 +111,16 @@ async def track_page(request: Request, track_id: int, db: Session = Depends(get_
 
 
 @router.post("/api/MusicPage", response_model=FormPostResponse)
-async def SetRatingAndWritingComment(request: Request, rating_comment: FormPostRatingComment, db: Session = Depends(get_db)):
+async def SetRatingAndWritingComment(request: Request, rating_comment: FormPostRatingComment, db: Session = Depends(get_db), response: Response = None):
     current_datetime = datetime.now()
     timestamp_str = current_datetime.strftime('%Y-%m-%d %H:%M:%S')
     user_id = int(request.cookies.get("user_id"))
+    response.headers["X-Frame-Options"] = "DENY"
     if rating_comment.command == "Set Rating":
         print("Set rating")
-        print(f"track_id: {rating_comment.track_id}")
+        # print(f"track_id: {rating_comment.track_id}")
         rating_old = get_track_rating(db, user_id, rating_comment.track_id)
-        print(f"rating_old: {rating_old}")
+        # print(f"rating_old: {rating_old}")
         rating = RatingTrack(
             track_id=rating_comment.track_id,
             rating=rating_comment.rating,
@@ -151,7 +153,7 @@ async def SetRatingAndWritingComment(request: Request, rating_comment: FormPostR
             date=timestamp_str
         )
         created_comment = create_comment_track(comment, db)
-        print(f'created_comment: {created_comment.id}')
+        # print(f'created_comment: {created_comment.id}')
         return FormPostResponse(
             errors='',
             date=timestamp_str,
@@ -159,7 +161,7 @@ async def SetRatingAndWritingComment(request: Request, rating_comment: FormPostR
         )
     elif rating_comment.command == "Delete Comment":
         print("Delete Comment")
-        print(f"Deleted comment_id:{rating_comment.comment_id}")
+        # print(f"Deleted comment_id:{rating_comment.comment_id}")
         delete_user_comment(db=db, comment_id=rating_comment.comment_id)
         return FormPostResponse(
             errors='',
