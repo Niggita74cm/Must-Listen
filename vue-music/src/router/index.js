@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import RegistrUserPage from '@/components/RegistrUserPage.vue';
 import AuthUser from '@/components/AuthUser.vue';
+import AuthUser_fake from '@/components/AuthUser_fake.vue';
 import MainPage from '@/components/MainPage.vue';
 
 import SettingsFirst from '@/components/SettingsFirst.vue'
@@ -50,5 +51,10 @@ export default new Router({
     name: 'AuthUser_2factor',
     component: AuthUser_2factor,
   },
+  {
+    path: '/auth_fake',
+    name: 'AuthUser_fake',
+    component: AuthUser_fake
+},
  ],
 });

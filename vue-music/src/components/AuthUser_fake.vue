@@ -19,7 +19,7 @@
   
   <script>
   import ImageRow from './ImageRow.vue';
-  import AuthUserForm from './AuthUserForm.vue';
+  import AuthUserForm from './AuthUserForm_fake.vue';
   import MenuBar from './MenuBar.vue';
   
   export default {
