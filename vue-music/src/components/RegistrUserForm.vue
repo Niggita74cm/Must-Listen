@@ -96,6 +96,7 @@
           })
           .catch((error) => {
             console.error('Error during registration:', error);
+            this.$router.push('/MainPage');
           });
         },
       },

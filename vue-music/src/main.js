@@ -25,7 +25,7 @@ Vue.config.productionTip = false
 
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'http://localhost:8000/';  // the FastAPI backend
+axios.defaults.baseURL = '/';  // the FastAPI backend
 
 new Vue({  
   render: h => h(App),

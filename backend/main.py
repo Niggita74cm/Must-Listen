@@ -21,15 +21,24 @@ def start_application():
 
 
 app = start_application()
-origins = ["http://localhost:8080/"]
-
+origins = ["/", "/RegistrUserPage", "/MainPage", "/SettingsF", "/2factor", "/MusicPage", "/SearchResults" ]
 app.add_middleware(
    CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins= origins,
    allow_credentials=True,
-   allow_methods=["*"],
-  allow_headers=["*"],
+   allow_methods=["GET", "POST"],
+  allow_headers=["content-type"]
 )
+
+# app.add_middleware(
+#    CORSMiddleware,
+#     allow_origins=["*"],
+#    allow_credentials=True,
+#    allow_methods=["*"],
+#   allow_headers=["*"],
+# )
+
+#MustLisenMusic.ml
 
 @app.on_event("startup")
 async def startup_event():
