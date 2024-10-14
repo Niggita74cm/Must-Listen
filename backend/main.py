@@ -30,10 +30,16 @@ app = start_application()
 #   allow_headers=["content-type"]
 # )
 
-origins = ["/", "/RegistrUserPage", "/MainPage", "/SettingsF", "/2factor", "/MusicPage", "/SearchResults"]
+origins = ["https://89.169.175.111/",
+           "https://89.169.175.111/RegistrUserPage",
+           "https://89.169.175.111/MainPage",
+           "https://89.169.175.111/SettingsF",
+           "https://89.169.175.111/2factor",
+           "https://89.169.175.111/MusicPage",
+           "https://89.169.175.111/SearchResults"]
 app.add_middleware(
    CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
    allow_credentials=True,
    allow_methods=["GET", "POST", "OPTIONS"],
   allow_headers=["*"],
