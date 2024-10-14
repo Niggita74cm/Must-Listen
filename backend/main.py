@@ -21,7 +21,7 @@ def start_application():
 
 
 app = start_application()
-origins = ["/", "/RegistrUserPage", "/MainPage", "/SettingsF", "/2factor", "/MusicPage", "/SearchResults" ]
+
 # app.add_middleware(
 #    CORSMiddleware,
 #     allow_origins= origins,
@@ -30,11 +30,12 @@ origins = ["/", "/RegistrUserPage", "/MainPage", "/SettingsF", "/2factor", "/Mus
 #   allow_headers=["content-type"]
 # )
 
+origins = ["/", "/RegistrUserPage", "/MainPage", "/SettingsF", "/2factor", "/MusicPage", "/SearchResults"]
 app.add_middleware(
    CORSMiddleware,
     allow_origins=["*"],
    allow_credentials=True,
-   allow_methods=["*"],
+   allow_methods=["GET", "POST", "OPTIONS"],
   allow_headers=["*"],
 )
 
